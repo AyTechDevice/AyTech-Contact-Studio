@@ -1,0 +1,3372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AyTech Contact Studio</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%234f46e5'/%3E%3Ccircle cx='32' cy='26' r='6' fill='white'/%3E%3Cpath d='M20 46c2-6 6-9 12-9s10 3 12 9' fill='none' stroke='white' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+    <meta property="og:image" content="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%234f46e5'/%3E%3Ccircle cx='32' cy='26' r='6' fill='white'/%3E%3Cpath d='M20 46c2-6 6-9 12-9s10 3 12 9' fill='none' stroke='white' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <meta name="description" content="AyTech Contact Studio — client-side vCard manager, merger, and exporter.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --bg-base: #0b0f19;
+      --bg-surface: #111827;
+      --bg-surface-raised: #1e293b;
+      --bg-surface-hover: #334155;
+      --border-color: #334155;
+      --border-focus: #818cf8;
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --accent-primary: #818cf8;
+      --accent-primary-hover: #6366f1;
+      --accent-solid: #4f46e5;
+      --accent-glow: rgba(99, 102, 241, 0.28);
+      --color-success: #34d399;
+      --color-success-solid: #047857;
+      --color-success-bg: rgba(16, 185, 129, 0.14);
+      --color-warning: #fbbf24;
+      --color-warning-solid: #b45309;
+      --color-warning-bg: rgba(245, 158, 11, 0.16);
+      --color-danger: #fca5a5;
+      --color-danger-solid: #dc2626;
+      --color-danger-bg: rgba(239, 68, 68, 0.14);
+      --color-blue: #93c5fd;
+      --color-purple: #d8b4fe;
+      --color-cyan: #67e8f9;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.22);
+      --shadow-md: 0 10px 24px -8px rgba(0, 0, 0, 0.45);
+      --shadow-lg: 0 24px 48px -16px rgba(0, 0, 0, 0.55);
+      --header-h: 40px;
+      color-scheme: dark;
+    }
+
+    body.theme-light {
+      --bg-base: #f4f6fb;
+      --bg-surface: #ffffff;
+      --bg-surface-raised: #f1f5f9;
+      --bg-surface-hover: #e8eef6;
+      --border-color: #d5deea;
+      --border-focus: #4338ca;
+      --text-primary: #0f172a;
+      --text-secondary: #334155;
+      --text-muted: #64748b;
+      --accent-primary: #4338ca;
+      --accent-primary-hover: #3730a3;
+      --accent-solid: #4338ca;
+      --accent-glow: rgba(67, 56, 202, 0.16);
+      --color-success: #047857;
+      --color-success-solid: #047857;
+      --color-success-bg: #ecfdf5;
+      --color-warning: #92400e;
+      --color-warning-solid: #b45309;
+      --color-warning-bg: #fffbeb;
+      --color-danger: #b91c1c;
+      --color-danger-solid: #b91c1c;
+      --color-danger-bg: #fef2f2;
+      --color-blue: #1d4ed8;
+      --color-purple: #7e22ce;
+      --color-cyan: #0e7490;
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+      --shadow-md: 0 10px 24px -12px rgba(15, 23, 42, 0.18);
+      --shadow-lg: 0 24px 48px -20px rgba(15, 23, 42, 0.28);
+      color-scheme: light;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-base);
+      color: var(--text-primary);
+      line-height: 1.5;
+      min-height: 100vh;
+      min-height: 100dvh;
+      -webkit-font-smoothing: antialiased;
+      font-size: clamp(14px, 0.4vw + 13px, 16px);
+    }
+
+    body.modal-open { overflow: hidden; }
+
+    button, input, select, textarea { font-family: inherit; color: inherit; }
+
+    button:not(:disabled), [role="button"]:not(:disabled), label, summary { cursor: pointer; }
+
+    :focus { outline: none; }
+    :focus-visible {
+      outline: 2px solid var(--border-focus);
+      outline-offset: 2px;
+    }
+
+    .app-container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 20px 20px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .top-nav {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      padding: 22px 20px 16px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .brand-block {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      text-align: left;
+    }
+
+    .brand-mark {
+      width: 56px;
+      height: 56px;
+      flex: 0 0 auto;
+      filter: drop-shadow(0 8px 18px rgba(99, 102, 241, 0.45));
+    }
+
+    .brand-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+
+    .wordmark-line {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .wordmark {
+      font-weight: 800;
+      font-size: clamp(1.45rem, 2.4vw, 1.9rem);
+      letter-spacing: -0.045em;
+      line-height: 1.05;
+    }
+
+    .wordmark-sub {
+      font-weight: 600;
+      font-size: clamp(0.95rem, 1.6vw, 1.15rem);
+      color: var(--text-secondary);
+      letter-spacing: -0.02em;
+    }
+
+    .brand-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: var(--bg-surface-raised);
+      color: var(--accent-primary);
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border-color);
+    }
+
+    .nav-stats-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 36px;
+      padding: 6px 14px;
+      background: var(--bg-surface-raised);
+      border-radius: 999px;
+      border: 1px solid var(--border-color);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .pulse-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--color-success);
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.55); }
+      70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    .nav-actions-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 0.875rem;
+      font-weight: 650;
+      min-height: 40px;
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+      background: transparent;
+      transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn:disabled { opacity: 0.48; cursor: not-allowed; }
+    .btn-sm { min-height: 40px; padding: 8px 12px; font-size: 0.82rem; }
+    .btn-xs { min-height: 40px; padding: 6px 10px; font-size: 0.78rem; }
+    .btn-icon { padding: 8px 12px; background: var(--bg-surface-raised); color: var(--text-secondary); border: 1px solid var(--border-color); }
+    .btn-icon:hover:not(:disabled) { background: var(--bg-surface-hover); color: var(--text-primary); }
+
+    .btn-primary { background: var(--accent-solid); color: #fff; box-shadow: 0 2px 8px var(--accent-glow); }
+    .btn-primary:hover:not(:disabled) { background: var(--accent-primary-hover); }
+
+    .btn-secondary { background: var(--bg-surface-raised); color: var(--text-primary); border: 1px solid var(--border-color); }
+    .btn-secondary:hover:not(:disabled) { background: var(--bg-surface-hover); }
+
+    .btn-accent { background: var(--color-warning-solid); color: #fff; box-shadow: 0 2px 8px rgba(180, 83, 9, 0.28); }
+    .btn-accent:hover:not(:disabled) { filter: brightness(1.08); }
+
+    .btn-success { background: var(--color-success-solid); color: #fff; box-shadow: 0 2px 8px rgba(4, 120, 87, 0.28); }
+    .btn-success:hover:not(:disabled) { filter: brightness(1.08); }
+
+    .btn-danger-outline { background: transparent; color: var(--color-danger); border: 1px solid var(--border-color); }
+    .btn-danger-outline:hover:not(:disabled) { background: var(--color-danger-bg); border-color: var(--color-danger); }
+
+    .btn-counter-badge {
+      background: rgba(255, 255, 255, 0.22);
+      padding: 1px 7px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+    }
+
+    body.theme-dark .icon-moon { display: none; }
+    body.theme-dark .icon-sun { display: block; }
+    body.theme-light .icon-moon { display: block; }
+    body.theme-light .icon-sun { display: none; }
+
+    .section-upload { display: flex; flex-direction: column; gap: 12px; }
+
+    .upload-dropzone {
+      position: relative;
+      background: var(--bg-surface);
+      border: 2px dashed var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 28px 20px;
+      text-align: center;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .upload-dropzone:hover, .upload-dropzone.dragover {
+      border-color: var(--accent-primary);
+      background: rgba(99, 102, 241, 0.05);
+    }
+
+    .file-input-hidden {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .dropzone-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      pointer-events: none;
+    }
+
+    .dropzone-icon-box {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--bg-surface-raised);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-primary);
+      border: 1px solid var(--border-color);
+    }
+
+    .dropzone-text h2 { font-size: clamp(1rem, 1.4vw, 1.15rem); font-weight: 750; margin-bottom: 4px; }
+    .dropzone-text p { color: var(--text-secondary); font-size: 0.85rem; }
+
+    .kbd-tag {
+      font-family: var(--font-mono);
+      background: var(--bg-surface-raised);
+      border: 1px solid var(--border-color);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 0.78rem;
+    }
+
+    .url-import-row {
+      display: flex;
+      gap: 10px;
+      align-items: stretch;
+      flex-wrap: wrap;
+    }
+
+    .url-import-row input { flex: 1 1 240px; min-width: 0; }
+
+    .url-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      padding: 0 4px;
+    }
+
+    .url-hint code {
+      font-family: var(--font-mono);
+      background: var(--bg-surface-raised);
+      padding: 1px 5px;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+      font-size: 0.72rem;
+    }
+
+    .file-chips-list {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      flex-wrap: wrap;
+    }
+
+    .chips-label { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); }
+    .chips-wrapper { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .file-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 32px;
+      padding: 4px 10px;
+      background: var(--bg-surface-raised);
+      border: 1px solid var(--border-color);
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      color: var(--text-secondary);
+    }
+
+    .section-hud {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .hud-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      min-width: 0;
+    }
+
+    .hud-card-highlight { border-color: rgba(217, 119, 6, 0.55); }
+
+    .hud-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .hud-icon-blue { background: rgba(59, 130, 246, 0.16); color: var(--color-blue); }
+    .hud-icon-green { background: var(--color-success-bg); color: var(--color-success); }
+    .hud-icon-purple { background: rgba(168, 85, 247, 0.16); color: var(--color-purple); }
+    .hud-icon-amber { background: var(--color-warning-bg); color: var(--color-warning); }
+    .hud-icon-cyan { background: rgba(6, 182, 212, 0.16); color: var(--color-cyan); }
+
+    .hud-data { display: flex; flex-direction: column; min-width: 0; }
+    .hud-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+    .hud-val { font-size: clamp(1.25rem, 2vw, 1.55rem); font-weight: 800; line-height: 1.15; }
+    .hud-val-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      line-height: 1.4;
+    }
+    .badge-warning { background: var(--color-warning-bg); color: var(--color-warning); border: 1px solid rgba(180, 83, 9, 0.35); }
+    .badge-success { background: var(--color-success-bg); color: var(--color-success); border: 1px solid rgba(4, 120, 87, 0.35); }
+    .badge-source {
+      background: var(--accent-glow);
+      color: var(--accent-primary);
+      border: 1px solid var(--border-color);
+      font-family: var(--font-mono);
+      font-weight: 650;
+    }
+    .badge-subtle {
+      background: var(--bg-surface-raised);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+      font-family: var(--font-mono);
+    }
+
+    .section-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .search-box { position: relative; flex: 1 1 280px; min-width: 0; }
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+    .search-box input { width: 100%; padding: 10px 40px 10px 42px; }
+
+    .btn-clear-search {
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.25rem;
+      min-width: 36px;
+      min-height: 36px;
+      border-radius: 8px;
+    }
+    .btn-clear-search:hover { color: var(--text-primary); background: var(--bg-surface-hover); }
+
+    .filter-group, .action-buttons-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+    .form-input, .form-textarea, .form-select, .search-box input {
+      min-height: 40px;
+      padding: 8px 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+    }
+    .form-textarea { min-height: 88px; resize: vertical; }
+    .form-select-sm { min-height: 40px; }
+    .form-input:focus, .form-textarea:focus, .form-select:focus, .search-box input:focus {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .selection-dropdown-wrap { position: relative; }
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      display: none;
+      flex-direction: column;
+      min-width: 210px;
+      z-index: 40;
+      overflow: hidden;
+    }
+    .dropdown-menu.show { display: flex; }
+    .dropdown-item {
+      padding: 10px 14px;
+      min-height: 40px;
+      background: transparent;
+      border: none;
+      text-align: left;
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .dropdown-item:hover { background: var(--bg-surface-hover); }
+
+    .table-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .table-responsive { width: 100%; overflow-x: auto; max-height: 640px; }
+    .contacts-table { width: 100%; min-width: 980px; border-collapse: collapse; text-align: left; font-size: 0.875rem; }
+    .contacts-table th {
+      background: var(--bg-surface-raised);
+      padding: 12px 14px;
+      font-size: 0.72rem;
+      font-weight: 750;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .contacts-table th:first-child,
+    .contacts-table td:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 6;
+      background: var(--bg-surface);
+    }
+    .contacts-table th:first-child { z-index: 7; background: var(--bg-surface-raised); }
+    .th-sortable { cursor: pointer; }
+    .th-sortable:hover { color: var(--text-primary); }
+    .sort-arrow { margin-left: 4px; opacity: 0.55; }
+    .th-checkbox { width: 52px; text-align: center; }
+    .th-checkbox input { width: 18px; height: 18px; accent-color: var(--accent-solid); }
+    .th-actions { width: 112px; text-align: right; }
+    .contacts-table td { padding: 12px 14px; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+    .contacts-table tbody tr:hover td { background: var(--bg-surface-hover); }
+    .contacts-table tbody tr:hover td:first-child { background: var(--bg-surface-hover); }
+    .contacts-table tr.selected td { background: rgba(99, 102, 241, 0.1); }
+    .contacts-table tr.selected td:first-child { background: rgba(99, 102, 241, 0.14); }
+    body.theme-light .contacts-table tr.selected td,
+    body.theme-light .contacts-table tr.selected td:first-child { background: #eef2ff; }
+
+    .cell-name-box { display: flex; flex-direction: column; gap: 2px; }
+    .cell-name { font-weight: 750; color: var(--text-primary); }
+    .cell-title { font-size: 0.75rem; color: var(--text-muted); }
+    .cell-tag-list, .source-badge-list { display: flex; flex-wrap: wrap; gap: 4px; }
+    .tag-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      background: var(--bg-surface-raised);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+    }
+    .tag-label { font-size: 0.62rem; font-weight: 800; color: var(--text-muted); }
+    .text-muted { color: var(--text-muted); }
+    .row-actions { display: flex; gap: 4px; justify-content: flex-end; }
+
+    .table-empty-state { padding: 56px 20px; text-align: center; color: var(--text-secondary); }
+    .empty-icon { margin-bottom: 10px; opacity: 0.45; color: var(--text-muted); }
+    .table-empty-state h3 { font-size: 1.05rem; font-weight: 750; color: var(--text-primary); margin-bottom: 6px; }
+
+    .table-pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 16px;
+      background: var(--bg-surface-raised);
+      border-top: 1px solid var(--border-color);
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+    .pagination-controls, .pagination-buttons, .page-size-selector { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.66);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 80;
+    }
+    .modal-dialog {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 640px;
+      max-height: min(90vh, 900px);
+      max-height: min(90dvh, 900px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .modal-lg { max-width: 920px; }
+    .modal-sm { max-width: 480px; }
+    .modal-header, .modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 20px;
+    }
+    .modal-header { border-bottom: 1px solid var(--border-color); }
+    .modal-footer {
+      justify-content: flex-end;
+      background: var(--bg-surface-raised);
+      border-top: 1px solid var(--border-color);
+    }
+    .modal-title-group { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .modal-icon-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background: var(--accent-glow);
+      color: var(--accent-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+    }
+    .modal-header h2 { font-size: clamp(1rem, 1.5vw, 1.15rem); font-weight: 750; }
+    .modal-header p { font-size: 0.8rem; color: var(--text-muted); }
+    .btn-close-modal {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.6rem;
+      min-width: 40px;
+      min-height: 40px;
+      border-radius: 10px;
+      line-height: 1;
+    }
+    .btn-close-modal:hover { background: var(--bg-surface-hover); color: var(--text-primary); }
+    .modal-body { padding: 18px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+    .flex-spacer { flex: 1; }
+
+    .dedupe-options-bar, .dedupe-summary-grid, .cluster-card, .source-info-box, .info-alert, .radio-card {
+      background: var(--bg-surface-raised);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+    }
+    .dedupe-options-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px 16px;
+      padding: 12px 14px;
+      font-size: 0.85rem;
+      flex-wrap: wrap;
+    }
+    .options-title { font-weight: 750; color: var(--text-muted); }
+    .checkbox-label { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; }
+    .checkbox-label input { width: 18px; height: 18px; accent-color: var(--accent-solid); }
+    .dedupe-summary-grid {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      gap: 10px;
+      padding: 14px;
+      flex-wrap: wrap;
+    }
+    .summary-metric { display: flex; flex-direction: column; align-items: center; min-width: 90px; }
+    .metric-label { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); }
+    .metric-val { font-size: clamp(1.3rem, 2vw, 1.6rem); font-weight: 800; }
+    .text-accent { color: var(--color-warning); }
+    .summary-arrow { font-size: 1.4rem; color: var(--text-muted); }
+    .clusters-container { display: flex; flex-direction: column; gap: 10px; max-height: 360px; overflow-y: auto; }
+    .cluster-card { padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+    .cluster-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+    .cluster-title { font-weight: 750; }
+    .cluster-members-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-left: 12px;
+      border-left: 2px solid var(--accent-primary);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    .member-line { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+    .contact-form, .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .contact-form { gap: 14px; }
+    .form-group label { font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .dynamic-inputs-list { display: flex; flex-direction: column; gap: 8px; }
+    .dynamic-input-row { display: flex; gap: 8px; align-items: center; }
+    .dynamic-input-row input { flex: 1; min-width: 0; }
+    .dynamic-input-row select { width: 118px; flex: 0 0 auto; }
+    .source-info-box { padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+    .source-hint { font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono); }
+
+    .radio-card-group { display: flex; flex-direction: column; gap: 8px; }
+    .radio-card { display: flex; align-items: center; gap: 12px; padding: 12px 14px; min-height: 44px; }
+    .radio-card:hover { border-color: var(--accent-primary); }
+    .radio-card input { width: 18px; height: 18px; accent-color: var(--accent-solid); }
+    .radio-card-content { display: flex; flex-direction: column; }
+    .radio-card-content span { font-size: 0.75rem; color: var(--text-muted); }
+    .info-alert {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      background: var(--accent-glow);
+    }
+
+    .toast-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 120;
+      pointer-events: none;
+      max-width: min(440px, calc(100vw - 24px));
+    }
+    .toast {
+      padding: 12px 14px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      font-size: 0.85rem;
+      color: var(--text-primary);
+      pointer-events: auto;
+      animation: toastIn 0.2s ease-out;
+    }
+    .toast-success { border-left: 4px solid var(--color-success-solid); }
+    .toast-error { border-left: 4px solid var(--color-danger-solid); }
+    .toast-info { border-left: 4px solid var(--accent-solid); }
+    @keyframes toastIn {
+      from { transform: translateY(8px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .ml-1 { margin-left: 6px; }
+    .mt-1 { margin-top: 4px; }
+
+    @media (max-width: 1100px) {
+      .section-hud { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 900px) {
+      .section-hud { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .section-toolbar { flex-direction: column; align-items: stretch; }
+      .search-box { width: 100%; flex-basis: auto; }
+      .filter-group, .action-buttons-group { width: 100%; }
+    }
+    @media (max-width: 700px) {
+      .modal-backdrop { padding: 0; align-items: stretch; }
+      .modal-dialog {
+        max-width: none;
+        width: 100%;
+        height: 100%;
+        height: 100dvh;
+        max-height: none;
+        border-radius: 0;
+        border: none;
+      }
+      .modal-footer { position: sticky; bottom: 0; }
+      .form-row-2 { grid-template-columns: 1fr; }
+      .cluster-header { align-items: flex-start; }
+    }
+    @media (max-width: 640px) {
+      .app-container { padding: 12px 12px 28px; }
+      .brand-block { flex-direction: column; text-align: center; }
+      .brand-copy, .wordmark-line { align-items: center; justify-content: center; }
+      .nav-actions-row { justify-content: center; flex-wrap: wrap; }
+      .toast-container { left: 12px; right: 12px; max-width: none; }
+      .table-pagination { align-items: flex-start; }
+    }
+    @media (max-width: 560px) {
+      .section-hud { grid-template-columns: 1fr; }
+      .dynamic-input-row { flex-wrap: wrap; }
+      .dynamic-input-row select { width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="theme-dark">
+  <div id="app" class="app-container">
+    <header class="top-nav">
+      <div class="brand-block">
+        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+          <defs>
+            <linearGradient id="aytechBadge" x1="8" y1="4" x2="58" y2="60" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#6366f1"/>
+              <stop offset="1" stop-color="#7c3aed"/>
+            </linearGradient>
+          </defs>
+          <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#aytechBadge)"/>
+          <rect x="14" y="15" width="36" height="34" rx="6" fill="none" stroke="#ffffff" stroke-width="2.2"/>
+          <circle cx="32" cy="27" r="5.2" fill="#ffffff"/>
+          <path d="M21.5 42.5c1.6-5.2 5.2-7.6 10.5-7.6s8.9 2.4 10.5 7.6" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M18 15.5v-3.2M46 15.5v-3.2" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>
+        <div class="brand-copy">
+          <h1 class="wordmark-line">
+            <span class="wordmark">AyTech</span>
+            <span class="wordmark-sub">Contact Studio</span>
+          </h1>
+          <span class="brand-badge">RFC 2426 / 6350 Pro</span>
+        </div>
+      </div>
+      <div class="nav-stats-pill" id="navStatsPill">
+        <span class="pulse-indicator" aria-hidden="true"></span>
+        <span id="navContactCount">0 contacts loaded</span>
+      </div>
+      <div class="nav-actions-row">
+        <button id="btnThemeToggle" class="btn btn-icon btn-sm" type="button" title="Toggle theme" aria-label="Toggle color theme">
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+        </button>
+        <button id="btnResetAll" class="btn btn-danger-outline btn-sm" type="button" title="Reset session" aria-label="Reset session">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+          Reset Session
+        </button>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <section class="section-upload" aria-label="Import contacts">
+        <div id="dropzone" class="upload-dropzone">
+          <input type="file" id="fileInput" multiple accept=".vcf,.vcard,text/vcard,text/x-vcard" class="file-input-hidden" aria-label="Upload vCard files">
+          <div class="dropzone-content">
+            <div class="dropzone-icon-box" aria-hidden="true">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" x2="12" y1="3" y2="15"/>
+              </svg>
+            </div>
+            <div class="dropzone-text">
+              <h2>Drag and drop VCF / vCard files</h2>
+              <p>Multiple <span class="kbd-tag">.vcf</span> files at once · vCard 2.1, 3.0, and 4.0</p>
+            </div>
+            <span class="btn btn-primary">Browse Files</span>
+          </div>
+        </div>
+        <div class="url-import-row">
+          <input type="url" id="urlInput" class="form-input" placeholder="https://example.com/Contact.vcf" autocomplete="off" aria-label="vCard file URL" spellcheck="false">
+          <button id="btnImportUrl" class="btn btn-secondary" type="button" title="Import from URL">Import from URL</button>
+        </div>
+        <div class="url-hint">
+          Supports Google Drive <code>drive.google.com/file/d/FILE_ID/view</code> and GitHub <code>github.com/user/repo/blob/main/contacts.vcf</code> share links.
+        </div>
+        <div id="fileChipsContainer" class="file-chips-list" style="display: none;">
+          <span class="chips-label">Active Source Files:</span>
+          <div id="fileChips" class="chips-wrapper"></div>
+        </div>
+      </section>
+
+      <section class="section-hud" aria-label="Contact statistics">
+        <article class="hud-card">
+          <div class="hud-icon hud-icon-blue" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="hud-data">
+            <span class="hud-label">Total Contacts</span>
+            <span class="hud-val" id="statTotalContacts">0</span>
+          </div>
+        </article>
+        <article class="hud-card">
+          <div class="hud-icon hud-icon-green" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <div class="hud-data">
+            <span class="hud-label">Unique Phones</span>
+            <span class="hud-val" id="statUniquePhones">0</span>
+          </div>
+        </article>
+        <article class="hud-card">
+          <div class="hud-icon hud-icon-purple" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          </div>
+          <div class="hud-data">
+            <span class="hud-label">Unique Emails</span>
+            <span class="hud-val" id="statUniqueEmails">0</span>
+          </div>
+        </article>
+        <article class="hud-card hud-card-highlight" id="cardDuplicates">
+          <div class="hud-icon hud-icon-amber" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+          </div>
+          <div class="hud-data">
+            <span class="hud-label">Duplicate Clusters</span>
+            <div class="hud-val-group">
+              <span class="hud-val" id="statDuplicates">0</span>
+              <span class="badge badge-warning" id="badgeDupesFound" style="display: none;">0 mergeable</span>
+            </div>
+          </div>
+        </article>
+        <article class="hud-card">
+          <div class="hud-icon hud-icon-cyan" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </div>
+          <div class="hud-data">
+            <span class="hud-label">Selected Contacts</span>
+            <span class="hud-val" id="statSelectedCount">0</span>
+          </div>
+        </article>
+      </section>
+
+      <section class="section-toolbar" aria-label="Search and actions">
+        <div class="search-box">
+          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="searchInput" placeholder="Search name, phone, email, organization, notes, source…" autocomplete="off" aria-label="Search contacts">
+          <button id="btnClearSearch" class="btn-clear-search" type="button" style="display: none;" aria-label="Clear search">&times;</button>
+        </div>
+        <div class="filter-group">
+          <select id="sourceFilterSelect" class="form-select" aria-label="Filter by source">
+            <option value="">All Sources</option>
+          </select>
+          <div class="selection-dropdown-wrap">
+            <button id="btnSelectionMenu" class="btn btn-secondary btn-sm" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="Selection actions">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              Select
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div id="selectionMenu" class="dropdown-menu" role="menu">
+              <button class="dropdown-item" type="button" data-action="select-all" role="menuitem">Select All</button>
+              <button class="dropdown-item" type="button" data-action="select-page" role="menuitem">Select Current Page</button>
+              <button class="dropdown-item" type="button" data-action="select-dupes" role="menuitem">Select Duplicates Only</button>
+              <button class="dropdown-item" type="button" data-action="deselect-all" role="menuitem">Deselect All</button>
+            </div>
+          </div>
+        </div>
+        <div class="action-buttons-group">
+          <button id="btnDeduplicate" class="btn btn-accent" type="button" title="Detect and merge duplicates">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/><circle cx="12" cy="12" r="3"/></svg>
+            <span>Smart Deduplicate</span>
+            <span class="btn-counter-badge" id="btnDedupeCount" style="display: none;">0</span>
+          </button>
+          <button id="btnExport" class="btn btn-success" type="button" title="Export contacts to a VCF file">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+            <span>Export Merged VCF</span>
+          </button>
+          <button id="btnDeleteSelected" class="btn btn-danger-outline btn-icon" type="button" title="Delete selected" aria-label="Delete selected contacts" style="display: none;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <section class="section-table">
+        <div class="table-card">
+          <div class="table-responsive">
+            <table class="contacts-table" id="contactsTable">
+              <thead>
+                <tr>
+                  <th class="th-checkbox" scope="col">
+                    <input type="checkbox" id="selectAllCheckbox" title="Select or deselect all contacts on this page" aria-label="Select all contacts on this page">
+                  </th>
+                  <th class="th-sortable" data-sort="fn" scope="col"><span>Contact Name / Title</span><span class="sort-arrow">↕</span></th>
+                  <th class="th-sortable" data-sort="phone" scope="col"><span>Phone Numbers</span><span class="sort-arrow">↕</span></th>
+                  <th class="th-sortable" data-sort="email" scope="col"><span>Emails</span><span class="sort-arrow">↕</span></th>
+                  <th class="th-sortable" data-sort="org" scope="col"><span>Organization</span><span class="sort-arrow">↕</span></th>
+                  <th class="th-sortable" data-sort="source" scope="col"><span>Source</span><span class="sort-arrow">↕</span></th>
+                  <th scope="col"><span>Address</span></th>
+                  <th class="th-actions" scope="col"><span>Actions</span></th>
+                </tr>
+              </thead>
+              <tbody id="contactsTbody"></tbody>
+            </table>
+          </div>
+          <div id="tableEmptyState" class="table-empty-state">
+            <div class="empty-icon" aria-hidden="true">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 18a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2"/><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <h3 id="emptyTitle">No Contacts Loaded</h3>
+            <p id="emptyText">Drag and drop one or more <code>.vcf</code> files above, or import a public vCard URL.</p>
+          </div>
+          <div class="table-pagination" id="tablePagination" style="display: none;">
+            <div class="pagination-info">
+              Showing <span id="pagStart">0</span> to <span id="pagEnd">0</span> of <span id="pagTotal">0</span> contacts
+            </div>
+            <div class="pagination-controls">
+              <div class="page-size-selector">
+                <label for="pageSizeSelect">Per page:</label>
+                <select id="pageSizeSelect" class="form-select form-select-sm" aria-label="Rows per page">
+                  <option value="25">25</option>
+                  <option value="50" selected>50</option>
+                  <option value="100">100</option>
+                  <option value="250">250</option>
+                </select>
+              </div>
+              <div class="pagination-buttons">
+                <button id="btnPrevPage" class="btn btn-icon btn-sm" type="button" title="Previous page" aria-label="Previous page">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+                </button>
+                <span class="page-indicator">Page <strong id="currentPageNum">1</strong> of <strong id="totalPagesNum">1</strong></span>
+                <button id="btnNextPage" class="btn btn-icon btn-sm" type="button" title="Next page" aria-label="Next page">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="dedupeModal" class="modal-backdrop" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="dedupeModalTitle">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-header">
+          <div class="modal-title-group">
+            <div class="modal-icon-badge" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+            </div>
+            <div>
+              <h2 id="dedupeModalTitle">Intelligent Contact Deduplication</h2>
+              <p>Review detected duplicate clusters before applying merge</p>
+            </div>
+          </div>
+          <button class="btn-close-modal" id="btnCloseDedupeModal" type="button" aria-label="Close deduplication dialog">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="dedupe-options-bar">
+            <span class="options-title">Match Strategy:</span>
+            <label class="checkbox-label"><input type="checkbox" id="dedupeMatchPhone" checked> Match Normalized Phone Numbers</label>
+            <label class="checkbox-label"><input type="checkbox" id="dedupeMatchEmail" checked> Match Canonical Emails</label>
+            <label class="checkbox-label"><input type="checkbox" id="dedupeMatchName" checked> Match Full Name</label>
+            <button id="btnRerunDedupe" class="btn btn-secondary btn-sm" type="button">Recalculate</button>
+          </div>
+          <div class="dedupe-summary-grid">
+            <div class="summary-metric">
+              <span class="metric-label">Current Contacts</span>
+              <span class="metric-val" id="dedupeStatOriginal">0</span>
+            </div>
+            <div class="summary-arrow" aria-hidden="true">&rarr;</div>
+            <div class="summary-metric">
+              <span class="metric-label">After Deduplication</span>
+              <span class="metric-val" id="dedupeStatResult">0</span>
+            </div>
+            <div class="summary-metric">
+              <span class="metric-label">Duplicates to Merge</span>
+              <span class="metric-val text-accent" id="dedupeStatMerged">0</span>
+            </div>
+          </div>
+          <div class="clusters-container" id="clustersContainer"></div>
+        </div>
+        <div class="modal-footer">
+          <button id="btnCancelDedupe" class="btn btn-secondary" type="button">Cancel</button>
+          <button id="btnApplyDedupe" class="btn btn-primary" type="button">Apply Merge</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="contactModal" class="modal-backdrop" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modalContactTitle">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <div class="modal-title-group">
+            <div class="modal-icon-badge" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div>
+              <h2 id="modalContactTitle">Contact Details</h2>
+              <p id="modalContactSubtitle">View or edit contact properties</p>
+            </div>
+          </div>
+          <button class="btn-close-modal" id="btnCloseContactModal" type="button" aria-label="Close contact editor">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="contactEditForm" class="contact-form">
+            <input type="hidden" id="editContactId">
+            <div class="form-group">
+              <label for="editFn">Full Name (FN) *</label>
+              <input type="text" id="editFn" class="form-input" autocomplete="name">
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="editGivenName">Given / First Name</label>
+                <input type="text" id="editGivenName" class="form-input" autocomplete="given-name">
+              </div>
+              <div class="form-group">
+                <label for="editFamilyName">Family / Last Name</label>
+                <input type="text" id="editFamilyName" class="form-input" autocomplete="family-name">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Phone Numbers</label>
+              <div id="phoneInputsList" class="dynamic-inputs-list"></div>
+              <button type="button" id="btnAddPhoneField" class="btn btn-secondary btn-xs mt-1">+ Add Phone</button>
+            </div>
+            <div class="form-group">
+              <label>Email Addresses</label>
+              <div id="emailInputsList" class="dynamic-inputs-list"></div>
+              <button type="button" id="btnAddEmailField" class="btn btn-secondary btn-xs mt-1">+ Add Email</button>
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="editOrg">Organization / Company</label>
+                <input type="text" id="editOrg" class="form-input" autocomplete="organization">
+              </div>
+              <div class="form-group">
+                <label for="editTitle">Job Title</label>
+                <input type="text" id="editTitle" class="form-input" autocomplete="organization-title">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="editAddress">Street Address</label>
+              <input type="text" id="editAddress" class="form-input" placeholder="Street, City, State, ZIP" autocomplete="street-address">
+            </div>
+            <div class="form-group">
+              <label for="editNotes">Notes</label>
+              <textarea id="editNotes" class="form-textarea" rows="3" placeholder="Additional remarks or notes…"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Source Information</label>
+              <div class="source-info-box" id="editSourceInfo"></div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button id="btnDeleteCurrentContact" class="btn btn-danger-outline" type="button">Delete Contact</button>
+          <div class="flex-spacer"></div>
+          <button id="btnCancelEdit" class="btn btn-secondary" type="button">Cancel</button>
+          <button id="btnSaveContact" class="btn btn-primary" type="button">Save Changes</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="exportModal" class="modal-backdrop" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="exportModalTitle">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-header">
+          <div class="modal-title-group">
+            <div class="modal-icon-badge" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+            </div>
+            <div>
+              <h2 id="exportModalTitle">Export Master VCF</h2>
+              <p>Download a clean vCard 3.0 file</p>
+            </div>
+          </div>
+          <button class="btn-close-modal" id="btnCloseExportModal" type="button" aria-label="Close export dialog">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="exportFilename">Output Filename</label>
+            <input type="text" id="exportFilename" class="form-input" value="merged_contacts.vcf" spellcheck="false">
+          </div>
+          <div class="form-group">
+            <span class="options-title">Export Scope:</span>
+            <div class="radio-card-group">
+              <label class="radio-card">
+                <input type="radio" name="exportScope" value="all" checked>
+                <div class="radio-card-content">
+                  <strong>All Active Contacts</strong>
+                  <span id="exportAllCount">0 contacts</span>
+                </div>
+              </label>
+              <label class="radio-card" id="exportSelectedRadioWrap">
+                <input type="radio" name="exportScope" value="selected">
+                <div class="radio-card-content">
+                  <strong>Selected Contacts Only</strong>
+                  <span id="exportSelectedCount">0 selected</span>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="info-alert">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="16" y2="12"/><line x1="12" x2="12.01" y1="8" y2="8"/></svg>
+            <span>Output stays compatible with Apple Contacts, Google Contacts, Outlook, and Android. Original file names travel in X-AYTECH-SOURCE. Iranian phone numbers are normalized to +98 international format.</span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btnCancelExport" class="btn btn-secondary" type="button">Cancel</button>
+          <button id="btnConfirmExport" class="btn btn-success" type="button">Download .VCF File</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toastContainer" class="toast-container" aria-live="polite" aria-relevant="additions"></div>
+  </div>
+
+  <script type="module">
+    const URL_FETCH_ERROR = "Could not fetch this URL (CORS or network). Download the .vcf file and upload it manually.";
+    const STORAGE_TOAST = "Session storage unavailable — changes are not persisted";
+    const DB_NAME = "aytech_contact_studio";
+    const DB_STORE = "state";
+
+    // Iranian mobile phone regexes (after stripping non-digits)
+    const IR_MOBILE_LOCAL = /^0?9\d{9}$/;          // 09xxxxxxxxx or 9xxxxxxxxx
+    const IR_MOBILE_INTL  = /^989\d{9}$/;          // 989xxxxxxxxx (without +)
+    const IR_LANDLINE_LOCAL = /^0\d{2,3}\d{7,8}$/; // 0xx xxxxxxx / 0xxx xxxxxxx
+    const IR_COUNTRY_CODE = "98";
+    const DEFAULT_REGION = "IR";
+
+    const state = {
+      contacts: [],
+      filteredContacts: [],
+      selectedIds: new Set(),
+      sourceFiles: [],
+      currentPage: 1,
+      pageSize: 50,
+      sortBy: "fn",
+      sortOrder: "asc",
+      searchQuery: "",
+      sourceFilter: "",
+      stats: {
+        totalContacts: 0,
+        uniquePhones: 0,
+        uniqueEmails: 0,
+        duplicateClusters: 0,
+        duplicatesFound: 0
+      },
+      latestClusters: [],
+      editingContactId: null
+    };
+
+    let storageMode = "memory";
+    let dbHandle = null;
+    let storageToastShown = false;
+    let searchTimer = 0;
+
+    function decodeQuotedPrintable(input, charset = "UTF-8") {
+      if (!input) return "";
+      const cleanInput = input.replace(/=\r?\n/g, "");
+      const bytes = [];
+      let i = 0;
+      while (i < cleanInput.length) {
+        const char = cleanInput[i];
+        if (char === "=" && i + 2 < cleanInput.length) {
+          const hex = cleanInput.substr(i + 1, 2);
+          if (/^[0-9A-Fa-f]{2}$/.test(hex)) {
+            bytes.push(parseInt(hex, 16));
+            i += 3;
+            continue;
+          }
+        }
+        bytes.push(cleanInput.charCodeAt(i));
+        i++;
+      }
+      try {
+        const uint8 = new Uint8Array(bytes);
+        const decoder = new TextDecoder((charset || "utf-8").toLowerCase(), { fatal: false });
+        return decoder.decode(uint8);
+      } catch {
+        return String.fromCharCode(...bytes);
+      }
+    }
+
+    function unescapeVCardValue(str) {
+      if (!str) return "";
+      return str
+        .replace(/\\n/gi, "\n")
+        .replace(/\\r/gi, "")
+        .replace(/\\,/g, ",")
+        .replace(/\\;/g, ";")
+        .replace(/\\\\/g, "\\");
+    }
+
+    function escapeVCardValue(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/\\/g, "\\\\")
+        .replace(/;/g, "\\;")
+        .replace(/,/g, "\\,")
+        .replace(/\r?\n/g, "\\n");
+    }
+
+    /**
+     * Normalize a phone number to digits (preserving leading + context).
+     * Returns digits only (no +, no leading zeros beyond country identification).
+     */
+    function normalizePhoneNumber(rawTel) {
+      if (!rawTel) return "";
+      let cleaned = String(rawTel).trim().replace(/[^\d+]/g, "");
+      if (cleaned.startsWith("+")) cleaned = cleaned.substring(1);
+      if (cleaned.startsWith("00")) cleaned = cleaned.substring(2);
+      return cleaned;
+    }
+
+    /**
+     * Determine whether a normalized phone string looks like an Iranian mobile.
+     * Accepts forms: 09xxxxxxxxx, 9xxxxxxxxx, 989xxxxxxxxx
+     */
+    function isIranianMobile(normalizedPhone) {
+      if (!normalizedPhone) return false;
+      const digits = String(normalizedPhone).replace(/\D/g, "");
+      if (IR_MOBILE_INTL.test(digits)) return true;
+      if (IR_MOBILE_LOCAL.test(digits)) return true;
+      return false;
+    }
+
+    /**
+     * Determine whether a normalized phone string looks like an Iranian landline.
+     */
+    function isIranianLandline(normalizedPhone) {
+      if (!normalizedPhone) return false;
+      const digits = String(normalizedPhone).replace(/\D/g, "");
+      return IR_LANDLINE_LOCAL.test(digits) && !digits.startsWith("99") && !IR_MOBILE_LOCAL.test(digits);
+    }
+
+    /**
+     * Convert an Iranian local number into +98 international format (E.164 style).
+     * 09xxxxxxxxx  -> +989xxxxxxxxx
+     * 9xxxxxxxxx   -> +989xxxxxxxxx
+     * 0xxxxxxxxx   -> +98xxxxxxxxx  (landline)
+     * 989xxxxxxxxx -> +989xxxxxxxxx
+     * Returns the input untouched if not Iranian.
+     */
+    function toInternationalPhone(rawPhone) {
+      if (!rawPhone) return rawPhone;
+      const digits = String(rawPhone).replace(/\D/g, "");
+      if (!digits) return rawPhone;
+
+      // Already international with 98
+      if (digits.startsWith(IR_COUNTRY_CODE) && digits.length === 12) {
+        return "+" + digits;
+      }
+
+      // Iranian mobile local: 09xxxxxxxxx (11 digits)
+      if (digits.length === 11 && digits.startsWith("09")) {
+        return "+" + IR_COUNTRY_CODE + digits.substring(1);
+      }
+
+      // Iranian mobile without leading zero: 9xxxxxxxxx (10 digits)
+      if (digits.length === 10 && digits.startsWith("9")) {
+        return "+" + IR_COUNTRY_CODE + digits;
+      }
+
+      // Iranian landline: 0xx xxxxxxx / 0xxx xxxxxxx (10-11 digits starting with 0)
+      if (digits.length >= 10 && digits.length <= 11 && digits.startsWith("0")) {
+        return "+" + IR_COUNTRY_CODE + digits.substring(1);
+      }
+
+      // Already has +, preserve
+      if (String(rawPhone).trim().startsWith("+")) {
+        return "+" + digits;
+      }
+
+      return rawPhone;
+    }
+
+    /**
+     * Compute a canonical key for grouping phone numbers.
+     * All Iranian variants collapse to the 98xxxxxxxxxx form.
+     * For non-Iranian, we still use the last 8-10 digits as a fuzzy key.
+     */
+    function getPhoneMatchKey(normalizedPhone) {
+      if (!normalizedPhone) return "";
+      const digits = String(normalizedPhone).replace(/\D/g, "");
+      if (!digits) return "";
+
+      // Iranian canonical form
+      if (IR_MOBILE_INTL.test(digits)) return digits; // 989xxxxxxxxx
+      if (IR_MOBILE_LOCAL.test(digits)) {
+        // 09xxxxxxxxx or 9xxxxxxxxx
+        if (digits.length === 11 && digits.startsWith("09")) return IR_COUNTRY_CODE + digits.substring(1);
+        if (digits.length === 10 && digits.startsWith("9")) return IR_COUNTRY_CODE + digits;
+      }
+      if (digits.startsWith(IR_COUNTRY_CODE) && digits.length === 12) return digits;
+      if (isIranianLandline(digits)) {
+        if (digits.startsWith("0")) return IR_COUNTRY_CODE + digits.substring(1);
+        return IR_COUNTRY_CODE + digits;
+      }
+
+      // Non-Iranian: keep last 8-10 digits as fuzzy match key
+      if (digits.length >= 7) return digits.length > 10 ? digits.slice(-10) : digits;
+      return digits;
+    }
+
+    /**
+     * Generate a display-friendly formatted phone.
+     * Iranian +989xxxxxxxxx -> +98 9xx xxx xxxx
+     */
+    function formatPhoneDisplay(rawPhone) {
+      if (!rawPhone) return "";
+      const original = String(rawPhone).trim();
+      const intl = toInternationalPhone(original);
+      const digits = String(intl).replace(/\D/g, "");
+      if (digits.startsWith(IR_COUNTRY_CODE) && digits.length === 12) {
+        // +98 912 345 6789
+        const rest = digits.substring(2);
+        const p1 = rest.substring(0, 3);
+        const p2 = rest.substring(3, 6);
+        const p3 = rest.substring(6);
+        return `+98 ${p1} ${p2} ${p3}`.trim();
+      }
+      return original;
+    }
+
+    function foldVCardLine(line) {
+      if (!line || line.length <= 75) return line;
+      const chunks = [];
+      let remaining = line;
+      chunks.push(remaining.substring(0, 75));
+      remaining = remaining.substring(75);
+      while (remaining.length > 74) {
+        chunks.push(" " + remaining.substring(0, 74));
+        remaining = remaining.substring(74);
+      }
+      if (remaining.length > 0) chunks.push(" " + remaining);
+      return chunks.join("\r\n");
+    }
+
+    function unfoldVCardLines(rawText) {
+      if (rawText === null || rawText === undefined) return [];
+      const text = String(rawText);
+      if (!text) return [];
+      const normalized = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+      const unfolded = normalized.replace(/\n[ \t]/g, "");
+      return unfolded.split("\n");
+    }
+
+    function generateContactId() {
+      return "c_" + Math.random().toString(36).substring(2, 10) + Date.now().toString(36).substring(4);
+    }
+
+    function deriveSourceName(input) {
+      if (input == null) return "Unknown";
+      let name = String(input).trim();
+      if (!name) return "Unknown";
+      try {
+        if (/^[a-z][a-z0-9+.-]*:\/\//i.test(name)) {
+          const u = new URL(name);
+          // Google Drive: try to include file id fragment for readability
+          const gdMatch = u.href.match(/\/file\/d\/([^/?#]+)/);
+          if (gdMatch) {
+            name = `GoogleDrive_${gdMatch[1].slice(0, 8)}.vcf`;
+          } else {
+            const seg = u.pathname.split("/").filter(Boolean).pop();
+            if (seg) name = decodeURIComponent(seg);
+          }
+        }
+      } catch {
+        /* keep the raw label */
+      }
+      name = name.split(/[/\\]/).pop() || name;
+      name = name.replace(/\.(vcf|vcard)$/i, "").trim();
+      return name || "Unknown";
+    }
+
+    /**
+     * Convert Google Drive share URL to direct download URL.
+     * Supports:
+     *   https://drive.google.com/file/d/FILE_ID/view?usp=sharing
+     *   https://drive.google.com/open?id=FILE_ID
+     *   https://drive.google.com/uc?id=FILE_ID
+     */
+    function resolveGoogleDriveUrl(url) {
+      try {
+        const u = new URL(url);
+        if (!/drive\.google\.com$/i.test(u.hostname) && !/docs\.google\.com$/i.test(u.hostname)) return url;
+
+        let fileId = "";
+        const pathMatch = u.pathname.match(/\/file\/d\/([^/?#]+)/);
+        if (pathMatch) fileId = pathMatch[1];
+        if (!fileId) fileId = u.searchParams.get("id") || "";
+        if (!fileId) return url;
+
+        return `https://drive.google.com/uc?export=download&id=${encodeURIComponent(fileId)}`;
+      } catch {
+        return url;
+      }
+    }
+
+    /**
+     * Convert GitHub blob URL to raw content URL.
+     * Supports:
+     *   https://github.com/user/repo/blob/main/contacts.vcf
+     *   https://github.com/user/repo/blob/main/path/to/contacts.vcf
+     */
+    function resolveGitHubRawUrl(url) {
+      try {
+        const u = new URL(url);
+        if (!/github\.com$/i.test(u.hostname)) return url;
+        if (!/\/blob\//.test(u.pathname)) return url;
+        // Transform /blob/ -> /raw/
+        const rawPath = u.pathname.replace(/\/blob\//, "/raw/");
+        return `${u.protocol}//${u.host}${rawPath}${u.search}`;
+      } catch {
+        return url;
+      }
+    }
+
+    /**
+     * Resolve a user-supplied URL to a direct download URL.
+     */
+    function resolveImportUrl(url) {
+      let resolved = resolveGoogleDriveUrl(url);
+      resolved = resolveGitHubRawUrl(resolved);
+      return resolved;
+    }
+
+    function uniqueStrings(list) {
+      const seen = new Set();
+      const out = [];
+      for (const item of list) {
+        const value = String(item || "").replace(/[\r\n]/g, " ").trim();
+        if (!value || seen.has(value)) continue;
+        seen.add(value);
+        out.push(value);
+      }
+      return out;
+    }
+
+    function sourcesOf(contact) {
+      if (!contact) return ["Unknown"];
+      if (Array.isArray(contact.sourceNames) && contact.sourceNames.length) {
+        const names = uniqueStrings(contact.sourceNames);
+        return names.length ? names : ["Unknown"];
+      }
+      const raw = contact.sourceName || contact.sourceFile || "";
+      const names = uniqueStrings(String(raw).split(","));
+      return names.length ? names : ["Unknown"];
+    }
+
+    function assignSources(contact, rawParts, fallbackName) {
+      let names = [];
+      if (Array.isArray(rawParts) && rawParts.length) {
+        names = uniqueStrings(rawParts.join(",").split(","));
+      }
+      if (!names.length) {
+        const fallback = deriveSourceName(fallbackName || "");
+        names = [fallback || "Unknown"];
+      }
+      contact.sourceNames = names;
+      contact.sourceName = names.join(",");
+      contact.sourceFile = names.join(", ");
+      contact.sourceFiles = names.slice();
+      delete contact._aytechSourceParts;
+    }
+
+    function parseVCF(vcfContent, sourceFileName = "") {
+      const lines = unfoldVCardLines(vcfContent);
+      const contacts = [];
+      const errors = [];
+      let currentContact = null;
+      let inCard = false;
+
+      for (const rawLine of lines) {
+        const line = rawLine.trim();
+        if (!line) continue;
+        const upperLine = line.toUpperCase();
+
+        if (upperLine === "BEGIN:VCARD") {
+          inCard = true;
+          currentContact = {
+            id: generateContactId(),
+            version: "3.0",
+            fn: "",
+            n: { family: "", given: "", middle: "", prefix: "", suffix: "" },
+            nickname: "",
+            tels: [],
+            emails: [],
+            org: "",
+            department: "",
+            title: "",
+            role: "",
+            adrs: [],
+            notes: [],
+            urls: [],
+            bday: "",
+            categories: [],
+            hasPhoto: false,
+            xProps: {},
+            sourceNames: [],
+            sourceName: "",
+            isMerged: false,
+            mergedCount: 1
+          };
+          continue;
+        }
+
+        if (upperLine === "END:VCARD") {
+          if (inCard && currentContact) {
+            if (!currentContact.fn || currentContact.fn.trim() === "") {
+              const n = currentContact.n;
+              const parts = [n.prefix, n.given, n.middle, n.family, n.suffix].filter(Boolean);
+              if (parts.length > 0) currentContact.fn = parts.join(" ").trim();
+              else if (currentContact.org) currentContact.fn = currentContact.org;
+              else if (currentContact.emails.length > 0) currentContact.fn = currentContact.emails[0].value;
+              else if (currentContact.tels.length > 0) currentContact.fn = currentContact.tels[0].value;
+              else currentContact.fn = "Unnamed Contact";
+            }
+            assignSources(currentContact, currentContact._aytechSourceParts, sourceFileName);
+            contacts.push(currentContact);
+          }
+          inCard = false;
+          currentContact = null;
+          continue;
+        }
+
+        if (!inCard || !currentContact) continue;
+        const colonIdx = line.indexOf(":");
+        if (colonIdx === -1) continue;
+
+        const metaPart = line.substring(0, colonIdx);
+        let valuePart = line.substring(colonIdx + 1);
+        let rawKey = metaPart;
+        if (rawKey.includes(".")) {
+          const parts = rawKey.split(".");
+          rawKey = parts.slice(1).join(".");
+        }
+        const paramParts = rawKey.split(";");
+        const propName = paramParts[0].trim().toUpperCase();
+        const params = {};
+        for (let p = 1; p < paramParts.length; p++) {
+          const paramStr = paramParts[p].trim();
+          if (!paramStr) continue;
+          if (paramStr.includes("=")) {
+            const eq = paramStr.indexOf("=");
+            params[paramStr.slice(0, eq).toUpperCase()] = paramStr.slice(eq + 1);
+          } else {
+            params[paramStr.toUpperCase()] = true;
+          }
+        }
+
+        const isQP = params.ENCODING === "QUOTED-PRINTABLE" || params["QUOTED-PRINTABLE"];
+        const charset = params.CHARSET || "UTF-8";
+        if (isQP) valuePart = decodeQuotedPrintable(valuePart, charset);
+
+        switch (propName) {
+          case "VERSION":
+            currentContact.version = valuePart.trim();
+            break;
+          case "FN":
+            currentContact.fn = unescapeVCardValue(valuePart.trim());
+            break;
+          case "N": {
+            const nComponents = valuePart.split(";");
+            currentContact.n = {
+              family: unescapeVCardValue(nComponents[0] || "").trim(),
+              given: unescapeVCardValue(nComponents[1] || "").trim(),
+              middle: unescapeVCardValue(nComponents[2] || "").trim(),
+              prefix: unescapeVCardValue(nComponents[3] || "").trim(),
+              suffix: unescapeVCardValue(nComponents[4] || "").trim()
+            };
+            break;
+          }
+          case "TEL": {
+            const rawTel = valuePart.trim();
+            if (rawTel) {
+              let typeLabel = "CELL";
+              const validTypes = ["CELL", "MOBILE", "WORK", "HOME", "MAIN", "OTHER", "VOICE", "FAX", "PAGER", "PREF"];
+              for (const key of Object.keys(params)) {
+                const upperKey = key.toUpperCase();
+                if (validTypes.includes(upperKey)) {
+                  typeLabel = upperKey;
+                  break;
+                }
+                if (params[upperKey] && typeof params[upperKey] === "string") {
+                  const valUpper = params[upperKey].toUpperCase();
+                  let matched = false;
+                  for (const vt of validTypes) {
+                    if (valUpper.includes(vt)) {
+                      typeLabel = vt;
+                      matched = true;
+                      break;
+                    }
+                  }
+                  if (matched) break;
+                }
+              }
+              currentContact.tels.push({
+                value: rawTel,
+                normalized: normalizePhoneNumber(rawTel),
+                type: typeLabel === "MOBILE" ? "CELL" : typeLabel
+              });
+            }
+            break;
+          }
+          case "EMAIL": {
+            const rawEmail = unescapeVCardValue(valuePart.trim());
+            if (rawEmail) {
+              let typeLabel = "INTERNET";
+              const validTypes = ["WORK", "HOME", "INTERNET", "PREF", "OTHER"];
+              for (const key of Object.keys(params)) {
+                const upperKey = key.toUpperCase();
+                if (validTypes.includes(upperKey)) {
+                  typeLabel = upperKey;
+                  break;
+                }
+                if (typeof params[key] === "string") {
+                  const valUpper = params[key].toUpperCase();
+                  const hit = validTypes.find((vt) => valUpper.includes(vt));
+                  if (hit) {
+                    typeLabel = hit;
+                    break;
+                  }
+                }
+              }
+              currentContact.emails.push({ value: rawEmail, type: typeLabel });
+            }
+            break;
+          }
+          case "ORG": {
+            const orgParts = valuePart.split(";").map((p) => unescapeVCardValue(p.trim()));
+            currentContact.org = orgParts[0] || "";
+            if (orgParts.length > 1) currentContact.department = orgParts.slice(1).join(" - ");
+            break;
+          }
+          case "TITLE":
+            currentContact.title = unescapeVCardValue(valuePart.trim());
+            break;
+          case "ROLE":
+            currentContact.role = unescapeVCardValue(valuePart.trim());
+            break;
+          case "ADR": {
+            const adrParts = valuePart.split(";").map((p) => unescapeVCardValue(p.trim()));
+            let typeLabel = "HOME";
+            for (const key of Object.keys(params)) {
+              if (["WORK", "HOME", "POSTAL", "PARCEL", "PREF"].includes(key.toUpperCase())) {
+                typeLabel = key.toUpperCase();
+                break;
+              }
+              if (typeof params[key] === "string") {
+                const valUpper = params[key].toUpperCase();
+                if (["WORK", "HOME", "POSTAL", "PARCEL"].some((vt) => valUpper.includes(vt))) {
+                  typeLabel = ["WORK", "HOME", "POSTAL", "PARCEL"].find((vt) => valUpper.includes(vt));
+                  break;
+                }
+              }
+            }
+            const adrObj = {
+              poBox: adrParts[0] || "",
+              extAddress: adrParts[1] || "",
+              street: adrParts[2] || "",
+              city: adrParts[3] || "",
+              state: adrParts[4] || "",
+              postalCode: adrParts[5] || "",
+              country: adrParts[6] || "",
+              type: typeLabel
+            };
+            if (Object.values(adrObj).filter(Boolean).length > 1) currentContact.adrs.push(adrObj);
+            break;
+          }
+          case "NOTE": {
+            const note = unescapeVCardValue(valuePart.trim());
+            if (note) currentContact.notes.push(note);
+            break;
+          }
+          case "URL": {
+            const url = valuePart.trim();
+            if (url) currentContact.urls.push(url);
+            break;
+          }
+          case "BDAY":
+            currentContact.bday = valuePart.trim();
+            break;
+          case "CATEGORIES": {
+            const cats = valuePart.split(",").map((c) => unescapeVCardValue(c.trim())).filter(Boolean);
+            currentContact.categories.push(...cats);
+            break;
+          }
+          case "NICKNAME":
+            currentContact.nickname = unescapeVCardValue(valuePart.trim());
+            break;
+          case "PHOTO":
+            currentContact.hasPhoto = true;
+            break;
+          default:
+            if (propName === "X-AYTECH-SOURCE") {
+              if (!currentContact._aytechSourceParts) currentContact._aytechSourceParts = [];
+              currentContact._aytechSourceParts.push(unescapeVCardValue(valuePart.trim()));
+            } else if (propName.startsWith("X-")) {
+              currentContact.xProps[propName] = unescapeVCardValue(valuePart.trim());
+            }
+            break;
+        }
+      }
+
+      return { contacts, errors, totalParsed: contacts.length };
+    }
+
+    function serializeVCard(contact) {
+      const lines = ["BEGIN:VCARD", "VERSION:3.0"];
+      const fn = contact.fn || "Unnamed Contact";
+      lines.push(foldVCardLine(`FN:${escapeVCardValue(fn)}`));
+      const n = contact.n || {};
+      const nStr = [
+        escapeVCardValue(n.family || ""),
+        escapeVCardValue(n.given || ""),
+        escapeVCardValue(n.middle || ""),
+        escapeVCardValue(n.prefix || ""),
+        escapeVCardValue(n.suffix || "")
+      ].join(";");
+      lines.push(foldVCardLine(`N:${nStr}`));
+      if (contact.nickname) lines.push(foldVCardLine(`NICKNAME:${escapeVCardValue(contact.nickname)}`));
+      if (contact.org) {
+        let orgVal = escapeVCardValue(contact.org);
+        if (contact.department) orgVal += ";" + escapeVCardValue(contact.department);
+        lines.push(foldVCardLine(`ORG:${orgVal}`));
+      }
+      if (contact.title) lines.push(foldVCardLine(`TITLE:${escapeVCardValue(contact.title)}`));
+      if (contact.role) lines.push(foldVCardLine(`ROLE:${escapeVCardValue(contact.role)}`));
+
+      if (Array.isArray(contact.tels)) {
+        const seenTels = new Set();
+        for (const tel of contact.tels) {
+          if (!tel || !tel.value) continue;
+          // Normalize Iranian numbers to +98 international format on export
+          const exportedValue = toInternationalPhone(tel.value.trim());
+          const cleanVal = exportedValue.trim();
+          // Dedupe by canonical match key so 0912... and +98912... collapse
+          const dedupeKey = getPhoneMatchKey(cleanVal) || cleanVal.toLowerCase();
+          if (seenTels.has(dedupeKey)) continue;
+          seenTels.add(dedupeKey);
+          const telType = (tel.type || "CELL").toUpperCase();
+          lines.push(foldVCardLine(`TEL;TYPE=${telType}:${escapeVCardValue(cleanVal)}`));
+        }
+      }
+
+      if (Array.isArray(contact.emails)) {
+        const seenEmails = new Set();
+        for (const email of contact.emails) {
+          if (!email || !email.value) continue;
+          const cleanEmail = email.value.trim().toLowerCase();
+          if (seenEmails.has(cleanEmail)) continue;
+          seenEmails.add(cleanEmail);
+          const emailType = (email.type || "INTERNET").toUpperCase();
+          lines.push(foldVCardLine(`EMAIL;TYPE=${emailType}:${escapeVCardValue(email.value.trim())}`));
+        }
+      }
+
+      if (Array.isArray(contact.adrs)) {
+        for (const adr of contact.adrs) {
+          if (!adr) continue;
+          const adrType = (adr.type || "HOME").toUpperCase();
+          const adrStr = [
+            escapeVCardValue(adr.poBox || ""),
+            escapeVCardValue(adr.extAddress || ""),
+            escapeVCardValue(adr.street || ""),
+            escapeVCardValue(adr.city || ""),
+            escapeVCardValue(adr.state || ""),
+            escapeVCardValue(adr.postalCode || ""),
+            escapeVCardValue(adr.country || "")
+          ].join(";");
+          lines.push(foldVCardLine(`ADR;TYPE=${adrType}:${adrStr}`));
+        }
+      }
+
+      if (Array.isArray(contact.urls)) {
+        for (const url of contact.urls) {
+          if (url && url.trim()) lines.push(foldVCardLine(`URL:${url.trim()}`));
+        }
+      }
+      if (contact.bday) lines.push(foldVCardLine(`BDAY:${contact.bday.trim()}`));
+      if (Array.isArray(contact.categories) && contact.categories.length > 0) {
+        const catStr = contact.categories.map((c) => escapeVCardValue(String(c).trim())).join(",");
+        lines.push(foldVCardLine(`CATEGORIES:${catStr}`));
+      }
+      if (Array.isArray(contact.notes) && contact.notes.length > 0) {
+        const mergedNote = contact.notes.filter(Boolean).join("\n---\n");
+        lines.push(foldVCardLine(`NOTE:${escapeVCardValue(mergedNote)}`));
+      } else if (typeof contact.notes === "string" && contact.notes.trim()) {
+        lines.push(foldVCardLine(`NOTE:${escapeVCardValue(contact.notes.trim())}`));
+      }
+
+      if (contact.xProps && typeof contact.xProps === "object") {
+        for (const [xKey, xVal] of Object.entries(contact.xProps)) {
+          if (!xVal || typeof xVal !== "string") continue;
+          if (String(xKey).toUpperCase() === "X-AYTECH-SOURCE") continue;
+          lines.push(foldVCardLine(`${xKey}:${escapeVCardValue(xVal)}`));
+        }
+      }
+
+      const sourceLine = `X-AYTECH-SOURCE:${sourcesOf(contact).join(",")}`;
+      lines.push(foldVCardLine(sourceLine));
+      lines.push("END:VCARD");
+      return lines.join("\r\n");
+    }
+
+    function serializeVCards(contacts) {
+      if (!Array.isArray(contacts) || contacts.length === 0) return "";
+      return contacts.map((c) => serializeVCard(c)).join("\r\n\r\n") + "\r\n";
+    }
+
+    function normalizeEmail(email) {
+      if (!email) return "";
+      return email.trim().toLowerCase();
+    }
+
+    function normalizeName(name) {
+      if (!name) return "";
+      return name.trim().toLowerCase().replace(/[\s\-_.,]+/g, " ");
+    }
+
+    class UnionFind {
+      constructor(size) {
+        this.parent = new Array(size).fill(0).map((_, i) => i);
+        this.rank = new Array(size).fill(0);
+      }
+      find(i) {
+        if (this.parent[i] === i) return i;
+        this.parent[i] = this.find(this.parent[i]);
+        return this.parent[i];
+      }
+      union(i, j) {
+        const rootI = this.find(i);
+        const rootJ = this.find(j);
+        if (rootI === rootJ) return false;
+        if (this.rank[rootI] < this.rank[rootJ]) this.parent[rootI] = rootJ;
+        else if (this.rank[rootI] > this.rank[rootJ]) this.parent[rootJ] = rootI;
+        else {
+          this.parent[rootJ] = rootI;
+          this.rank[rootI]++;
+        }
+        return true;
+      }
+    }
+
+    function mergeContactCluster(clusterContacts, matchReasons = []) {
+      if (clusterContacts.length === 1) {
+        return { ...clusterContacts[0], isMerged: false, mergedCount: 1, matchReasons: [] };
+      }
+
+      let bestFn = "";
+      for (const c of clusterContacts) {
+        const fn = (c.fn || "").trim();
+        if (fn && fn !== "Unnamed Contact" && fn.length > bestFn.length) bestFn = fn;
+      }
+      if (!bestFn) bestFn = clusterContacts[0].fn || "Unnamed Contact";
+
+      const mergedN = { family: "", given: "", middle: "", prefix: "", suffix: "" };
+      for (const c of clusterContacts) {
+        const n = c.n || {};
+        if (!mergedN.family && n.family) mergedN.family = n.family;
+        if (!mergedN.given && n.given) mergedN.given = n.given;
+        if (!mergedN.middle && n.middle) mergedN.middle = n.middle;
+        if (!mergedN.prefix && n.prefix) mergedN.prefix = n.prefix;
+        if (!mergedN.suffix && n.suffix) mergedN.suffix = n.suffix;
+      }
+
+      const seenPhoneKeys = new Set();
+      const mergedTels = [];
+      for (const c of clusterContacts) {
+        for (const tel of c.tels || []) {
+          if (!tel || !tel.value) continue;
+          const key = getPhoneMatchKey(tel.normalized || normalizePhoneNumber(tel.value));
+          if (key && !seenPhoneKeys.has(key)) {
+            seenPhoneKeys.add(key);
+            mergedTels.push({ ...tel });
+          } else if (!key && !seenPhoneKeys.has(tel.value.trim())) {
+            seenPhoneKeys.add(tel.value.trim());
+            mergedTels.push({ ...tel });
+          }
+        }
+      }
+
+      const seenEmails = new Set();
+      const mergedEmails = [];
+      for (const c of clusterContacts) {
+        for (const email of c.emails || []) {
+          if (!email || !email.value) continue;
+          const key = normalizeEmail(email.value);
+          if (key && !seenEmails.has(key)) {
+            seenEmails.add(key);
+            mergedEmails.push({ ...email });
+          }
+        }
+      }
+
+      let bestOrg = "";
+      let bestTitle = "";
+      let bestRole = "";
+      let bestDept = "";
+      for (const c of clusterContacts) {
+        if (!bestOrg && c.org) bestOrg = c.org;
+        if (!bestTitle && c.title) bestTitle = c.title;
+        if (!bestRole && c.role) bestRole = c.role;
+        if (!bestDept && c.department) bestDept = c.department;
+      }
+
+      const seenAdrs = new Set();
+      const mergedAdrs = [];
+      for (const c of clusterContacts) {
+        for (const adr of c.adrs || []) {
+          if (!adr) continue;
+          const adrKey = [adr.street, adr.city, adr.state, adr.postalCode, adr.country]
+            .map((s) => (s || "").trim().toLowerCase())
+            .filter(Boolean)
+            .join("|");
+          if (adrKey && !seenAdrs.has(adrKey)) {
+            seenAdrs.add(adrKey);
+            mergedAdrs.push({ ...adr });
+          }
+        }
+      }
+
+      const seenNotes = new Set();
+      const mergedNotes = [];
+      for (const c of clusterContacts) {
+        const rawNotes = Array.isArray(c.notes) ? c.notes : [c.notes].filter(Boolean);
+        for (const note of rawNotes) {
+          if (!note || typeof note !== "string") continue;
+          const cleanNote = note.trim();
+          if (cleanNote && !seenNotes.has(cleanNote)) {
+            seenNotes.add(cleanNote);
+            mergedNotes.push(cleanNote);
+          }
+        }
+      }
+
+      const seenUrls = new Set();
+      const mergedUrls = [];
+      for (const c of clusterContacts) {
+        for (const u of c.urls || []) {
+          if (u && !seenUrls.has(u.trim().toLowerCase())) {
+            seenUrls.add(u.trim().toLowerCase());
+            mergedUrls.push(u.trim());
+          }
+        }
+      }
+
+      const seenCats = new Set();
+      const mergedCats = [];
+      for (const c of clusterContacts) {
+        for (const cat of c.categories || []) {
+          if (cat && !seenCats.has(cat.trim().toLowerCase())) {
+            seenCats.add(cat.trim().toLowerCase());
+            mergedCats.push(cat.trim());
+          }
+        }
+      }
+
+      const mergedXProps = {};
+      for (const c of clusterContacts) {
+        if (c.xProps) Object.assign(mergedXProps, c.xProps);
+      }
+      delete mergedXProps["X-AYTECH-SOURCE"];
+
+      const sourceNames = uniqueStrings(clusterContacts.flatMap((c) => sourcesOf(c)));
+      const originalIds = clusterContacts.map((c) => c.id);
+
+      return {
+        id: clusterContacts[0].id,
+        originalIds,
+        version: "3.0",
+        fn: bestFn,
+        n: mergedN,
+        nickname: clusterContacts.find((c) => c.nickname)?.nickname || "",
+        tels: mergedTels,
+        emails: mergedEmails,
+        org: bestOrg,
+        department: bestDept,
+        title: bestTitle,
+        role: bestRole,
+        adrs: mergedAdrs,
+        notes: mergedNotes,
+        urls: mergedUrls,
+        bday: clusterContacts.find((c) => c.bday)?.bday || "",
+        categories: mergedCats,
+        hasPhoto: clusterContacts.some((c) => c.hasPhoto),
+        xProps: mergedXProps,
+        sourceNames,
+        sourceName: sourceNames.join(","),
+        sourceFile: sourceNames.join(", "),
+        sourceFiles: sourceNames,
+        isMerged: true,
+        mergedCount: clusterContacts.length,
+        matchReasons: [...new Set(matchReasons)],
+        clusterMembers: clusterContacts.map((c) => ({ ...c, clusterMembers: undefined }))
+      };
+    }
+
+    function deduplicateContacts(contacts, options = {}) {
+      const { matchPhone = true, matchEmail = true, matchName = true } = options;
+      if (!Array.isArray(contacts) || contacts.length === 0) {
+        return {
+          mergedContacts: [],
+          duplicateClustersCount: 0,
+          duplicatesFound: 0,
+          originalCount: 0,
+          dedupedCount: 0,
+          clusters: []
+        };
+      }
+
+      const n = contacts.length;
+      const dsu = new UnionFind(n);
+      const phoneIndex = new Map();
+      const emailIndex = new Map();
+      const nameIndex = new Map();
+      const clusterReasons = new Map();
+
+      function attachReason(i, j, reason) {
+        const beforeI = dsu.find(i);
+        const beforeJ = dsu.find(j);
+        dsu.union(i, j);
+        const root = dsu.find(i);
+        const merged = new Set();
+        for (const key of [beforeI, beforeJ, root]) {
+          const set = clusterReasons.get(key);
+          if (set) set.forEach((item) => merged.add(item));
+        }
+        if (reason) merged.add(reason);
+        clusterReasons.set(root, merged);
+      }
+
+      for (let i = 0; i < n; i++) {
+        const c = contacts[i];
+        if (matchPhone && Array.isArray(c.tels)) {
+          for (const tel of c.tels) {
+            if (!tel || !tel.value) continue;
+            const norm = tel.normalized || normalizePhoneNumber(tel.value);
+            const matchKey = getPhoneMatchKey(norm);
+            if (!matchKey) continue;
+            if (phoneIndex.has(matchKey)) attachReason(i, phoneIndex.get(matchKey), `Matched Phone: ${tel.value}`);
+            else phoneIndex.set(matchKey, i);
+          }
+        }
+        if (matchEmail && Array.isArray(c.emails)) {
+          for (const email of c.emails) {
+            if (!email || !email.value) continue;
+            const normEmail = normalizeEmail(email.value);
+            if (!normEmail) continue;
+            if (emailIndex.has(normEmail)) attachReason(i, emailIndex.get(normEmail), `Matched Email: ${email.value}`);
+            else emailIndex.set(normEmail, i);
+          }
+        }
+        if (matchName && c.fn && c.fn.trim() !== "Unnamed Contact") {
+          const normName = normalizeName(c.fn);
+          if (normName && normName.length >= 3) {
+            if (nameIndex.has(normName)) attachReason(i, nameIndex.get(normName), `Matched Full Name: ${c.fn}`);
+            else nameIndex.set(normName, i);
+          }
+        }
+      }
+
+      const groups = new Map();
+      for (let i = 0; i < n; i++) {
+        const root = dsu.find(i);
+        if (!groups.has(root)) groups.set(root, []);
+        groups.get(root).push(contacts[i]);
+      }
+
+      const mergedContacts = [];
+      const duplicateClusters = [];
+      let duplicatesFound = 0;
+      for (const [root, clusterContacts] of groups.entries()) {
+        const reasons = clusterReasons.has(root) ? Array.from(clusterReasons.get(root)) : [];
+        if (clusterContacts.length > 1) {
+          duplicatesFound += clusterContacts.length - 1;
+          const merged = mergeContactCluster(clusterContacts, reasons);
+          mergedContacts.push(merged);
+          duplicateClusters.push({
+            rootId: merged.id,
+            count: clusterContacts.length,
+            reasons,
+            merged,
+            members: clusterContacts
+          });
+        } else {
+          mergedContacts.push({
+            ...clusterContacts[0],
+            isMerged: false,
+            mergedCount: 1,
+            matchReasons: []
+          });
+        }
+      }
+
+      return {
+        mergedContacts,
+        duplicateClustersCount: duplicateClusters.length,
+        duplicatesFound,
+        originalCount: n,
+        dedupedCount: mergedContacts.length,
+        clusters: duplicateClusters
+      };
+    }
+
+    function escapeHtml(text) {
+      if (text === null || text === undefined) return "";
+      return String(text)
+        .replace(/&/g, "\u0026amp;")
+        .replace(/</g, "\u0026lt;")
+        .replace(/>/g, "\u0026gt;")
+        .replace(/"/g, "\u0026quot;")
+        .replace(/'/g, "\u0026#039;");
+    }
+
+    function sourceBadgesHtml(contact) {
+      return `<span class="source-badge-list">${sourcesOf(contact)
+        .map((name) => `<span class="badge badge-source">${escapeHtml(name)}</span>`)
+        .join("")}</span>`;
+    }
+
+    function formatAddress(contact) {
+      const a = contact.adrs?.[0];
+      if (!a) return "";
+      return [a.street, a.city, a.state, a.country].filter(Boolean).join(", ");
+    }
+
+    function addressEditorValue(contact) {
+      const a = contact.adrs?.[0];
+      if (!a) return "";
+      return [a.street, a.city].filter(Boolean).join(", ");
+    }
+
+    function notifyStorageUnavailable() {
+      if (storageToastShown) return;
+      storageToastShown = true;
+      showToast(STORAGE_TOAST, "info");
+    }
+
+    function openDatabase() {
+      return new Promise((resolve, reject) => {
+        let req;
+        try {
+          req = indexedDB.open(DB_NAME, 1);
+        } catch (err) {
+          reject(err);
+          return;
+        }
+        req.onupgradeneeded = () => {
+          const db = req.result;
+          if (!db.objectStoreNames.contains(DB_STORE)) db.createObjectStore(DB_STORE, { keyPath: "key" });
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error || new Error("IndexedDB open failed"));
+      });
+    }
+
+    function idbGet(key) {
+      return new Promise((resolve, reject) => {
+        try {
+          const tx = dbHandle.transaction(DB_STORE, "readonly");
+          const req = tx.objectStore(DB_STORE).get(key);
+          req.onsuccess = () => resolve(req.result ? req.result.value : undefined);
+          req.onerror = () => reject(req.error);
+        } catch (err) {
+          reject(err);
+        }
+      });
+    }
+
+    function idbPut(key, value) {
+      return new Promise((resolve, reject) => {
+        try {
+          const tx = dbHandle.transaction(DB_STORE, "readwrite");
+          tx.objectStore(DB_STORE).put({ key, value });
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => reject(tx.error);
+          tx.onabort = () => reject(tx.error || new Error("IndexedDB aborted"));
+        } catch (err) {
+          reject(err);
+        }
+      });
+    }
+
+    function idbDelete(key) {
+      return new Promise((resolve, reject) => {
+        try {
+          const tx = dbHandle.transaction(DB_STORE, "readwrite");
+          tx.objectStore(DB_STORE).delete(key);
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => reject(tx.error);
+          tx.onabort = () => reject(tx.error || new Error("IndexedDB aborted"));
+        } catch (err) {
+          reject(err);
+        }
+      });
+    }
+
+    async function initStorage() {
+      try {
+        if (typeof indexedDB === "undefined") throw new Error("no indexedDB");
+        dbHandle = await openDatabase();
+        await idbGet("contacts");
+        storageMode = "idb";
+        return;
+      } catch {
+        dbHandle = null;
+      }
+      try {
+        const probe = "__aytech_probe__";
+        localStorage.setItem(probe, "1");
+        localStorage.removeItem(probe);
+        storageMode = "ls";
+      } catch {
+        storageMode = "memory";
+        notifyStorageUnavailable();
+      }
+    }
+
+    function snapshotContacts() {
+      return JSON.parse(JSON.stringify(state.contacts, (key, value) => (key === "clusterMembers" ? undefined : value)));
+    }
+
+    async function persistNow() {
+      const contacts = snapshotContacts();
+      const sourceFiles = state.sourceFiles.map((f) => ({ name: f.name, count: f.count }));
+      if (storageMode === "idb" && dbHandle) {
+        try {
+          await idbPut("contacts", contacts);
+          await idbPut("sourceFiles", sourceFiles);
+          return;
+        } catch {
+          storageMode = "ls";
+        }
+      }
+      if (storageMode === "ls") {
+        try {
+          localStorage.setItem("aytech_contacts", JSON.stringify(contacts));
+          localStorage.setItem("aytech_source_files", JSON.stringify(sourceFiles));
+          return;
+        } catch {
+          storageMode = "memory";
+          notifyStorageUnavailable();
+        }
+      }
+    }
+
+    async function hydrate() {
+      try {
+        let contacts = null;
+        let sourceFiles = null;
+        if (storageMode === "idb" && dbHandle) {
+          contacts = await idbGet("contacts");
+          sourceFiles = await idbGet("sourceFiles");
+        } else if (storageMode === "ls") {
+          contacts = JSON.parse(localStorage.getItem("aytech_contacts") || "null");
+          sourceFiles = JSON.parse(localStorage.getItem("aytech_source_files") || "null");
+        }
+        if (Array.isArray(contacts)) {
+          state.contacts = contacts.map((c) => {
+            const sourceNames = sourcesOf(c);
+            return {
+              ...c,
+              sourceNames,
+              sourceName: sourceNames.join(","),
+              n: c.n || { family: "", given: "", middle: "", prefix: "", suffix: "" },
+              tels: Array.isArray(c.tels) ? c.tels : [],
+              emails: Array.isArray(c.emails) ? c.emails : [],
+              adrs: Array.isArray(c.adrs) ? c.adrs : [],
+              notes: Array.isArray(c.notes) ? c.notes : [],
+              urls: Array.isArray(c.urls) ? c.urls : [],
+              categories: Array.isArray(c.categories) ? c.categories : [],
+              xProps: c.xProps && typeof c.xProps === "object" ? c.xProps : {}
+            };
+          });
+        }
+        if (Array.isArray(sourceFiles)) state.sourceFiles = sourceFiles.filter((f) => f && f.name);
+      } catch {
+        state.contacts = [];
+        state.sourceFiles = [];
+      }
+    }
+
+    async function clearStoredState() {
+      try {
+        if (storageMode === "idb" && dbHandle) {
+          await idbDelete("contacts");
+          await idbDelete("sourceFiles");
+        }
+      } catch {
+        /* fall through to localStorage */
+      }
+      try {
+        localStorage.removeItem("aytech_contacts");
+        localStorage.removeItem("aytech_source_files");
+      } catch {
+        /* ignore */
+      }
+    }
+
+    function showToast(message, type = "info") {
+      const host = document.getElementById("toastContainer");
+      if (!host) return;
+      const toast = document.createElement("div");
+      toast.className = `toast toast-${type}`;
+      toast.textContent = message;
+      host.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateY(8px)";
+        setTimeout(() => toast.remove(), 200);
+      }, 3500);
+    }
+
+    function readFileAsText(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ""));
+        reader.onerror = () => reject(reader.error || new Error("Could not read file"));
+        reader.readAsText(file);
+      });
+    }
+
+    function ensureVcfName(name) {
+      const trimmed = (name || "").trim() || "merged_contacts.vcf";
+      return /\.(vcf|vcard)$/i.test(trimmed) ? trimmed : `${trimmed}.vcf`;
+    }
+
+    function recomputeStats() {
+      const seenPhones = new Set();
+      const seenEmails = new Set();
+      for (const c of state.contacts) {
+        for (const t of c.tels || []) {
+          if (t && t.value) {
+            const key = getPhoneMatchKey(t.normalized || normalizePhoneNumber(t.value));
+            if (key) seenPhones.add(key);
+          }
+        }
+        for (const e of c.emails || []) {
+          if (e && e.value) seenEmails.add(normalizeEmail(e.value));
+        }
+      }
+      const dedupe = deduplicateContacts(state.contacts);
+      state.stats = {
+        totalContacts: state.contacts.length,
+        uniquePhones: seenPhones.size,
+        uniqueEmails: seenEmails.size,
+        duplicateClusters: dedupe.duplicateClustersCount,
+        duplicatesFound: dedupe.duplicatesFound
+      };
+      state.duplicateMemberIds = new Set();
+      for (const cluster of dedupe.clusters) {
+        for (const member of cluster.members) state.duplicateMemberIds.add(member.id);
+      }
+    }
+
+    function boot() {
+      const dropzone = document.getElementById("dropzone");
+      const fileInput = document.getElementById("fileInput");
+      const fileChipsContainer = document.getElementById("fileChipsContainer");
+      const fileChips = document.getElementById("fileChips");
+      const statTotalContacts = document.getElementById("statTotalContacts");
+      const statUniquePhones = document.getElementById("statUniquePhones");
+      const statUniqueEmails = document.getElementById("statUniqueEmails");
+      const statDuplicates = document.getElementById("statDuplicates");
+      const badgeDupesFound = document.getElementById("badgeDupesFound");
+      const statSelectedCount = document.getElementById("statSelectedCount");
+      const navContactCount = document.getElementById("navContactCount");
+      const btnDedupeCount = document.getElementById("btnDedupeCount");
+      const searchInput = document.getElementById("searchInput");
+      const btnClearSearch = document.getElementById("btnClearSearch");
+      const sourceFilterSelect = document.getElementById("sourceFilterSelect");
+      const selectAllCheckbox = document.getElementById("selectAllCheckbox");
+      const contactsTbody = document.getElementById("contactsTbody");
+      const tableEmptyState = document.getElementById("tableEmptyState");
+      const tablePagination = document.getElementById("tablePagination");
+      const pagStart = document.getElementById("pagStart");
+      const pagEnd = document.getElementById("pagEnd");
+      const pagTotal = document.getElementById("pagTotal");
+      const currentPageNum = document.getElementById("currentPageNum");
+      const totalPagesNum = document.getElementById("totalPagesNum");
+      const pageSizeSelect = document.getElementById("pageSizeSelect");
+      const btnPrevPage = document.getElementById("btnPrevPage");
+      const btnNextPage = document.getElementById("btnNextPage");
+      const btnSelectionMenu = document.getElementById("btnSelectionMenu");
+      const selectionMenu = document.getElementById("selectionMenu");
+      const btnDeduplicate = document.getElementById("btnDeduplicate");
+      const btnExport = document.getElementById("btnExport");
+      const btnDeleteSelected = document.getElementById("btnDeleteSelected");
+      const btnResetAll = document.getElementById("btnResetAll");
+      const btnThemeToggle = document.getElementById("btnThemeToggle");
+      const urlInput = document.getElementById("urlInput");
+      const btnImportUrl = document.getElementById("btnImportUrl");
+      const dedupeModal = document.getElementById("dedupeModal");
+      const contactModal = document.getElementById("contactModal");
+      const exportModal = document.getElementById("exportModal");
+      const clustersContainer = document.getElementById("clustersContainer");
+      const phoneInputsList = document.getElementById("phoneInputsList");
+      const emailInputsList = document.getElementById("emailInputsList");
+      const emptyTitle = document.getElementById("emptyTitle");
+      const emptyText = document.getElementById("emptyText");
+
+      function setModalOpen(el, open) {
+        el.style.display = open ? "flex" : "none";
+        const anyOpen = [dedupeModal, contactModal, exportModal].some((m) => m.style.display === "flex");
+        document.body.classList.toggle("modal-open", anyOpen);
+      }
+
+      function updateSourceFilterOptions() {
+        const currentVal = state.sourceFilter;
+        const sources = uniqueStrings(state.contacts.flatMap((c) => sourcesOf(c))).sort((a, b) => a.localeCompare(b));
+        sourceFilterSelect.innerHTML = `<option value="">All Sources</option>` + sources
+          .map((s) => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`)
+          .join("");
+        if (sources.includes(currentVal)) {
+          sourceFilterSelect.value = currentVal;
+          state.sourceFilter = currentVal;
+        } else {
+          sourceFilterSelect.value = "";
+          state.sourceFilter = "";
+        }
+      }
+
+      function updateHUD() {
+        statTotalContacts.textContent = state.stats.totalContacts.toLocaleString();
+        statUniquePhones.textContent = state.stats.uniquePhones.toLocaleString();
+        statUniqueEmails.textContent = state.stats.uniqueEmails.toLocaleString();
+        statDuplicates.textContent = state.stats.duplicateClusters.toLocaleString();
+        navContactCount.textContent = `${state.stats.totalContacts.toLocaleString()} contacts loaded`;
+        if (state.stats.duplicatesFound > 0) {
+          badgeDupesFound.style.display = "inline-flex";
+          badgeDupesFound.textContent = `${state.stats.duplicatesFound} mergeable`;
+          btnDedupeCount.style.display = "inline-block";
+          btnDedupeCount.textContent = String(state.stats.duplicatesFound);
+        } else {
+          badgeDupesFound.style.display = "none";
+          btnDedupeCount.style.display = "none";
+        }
+        statSelectedCount.textContent = state.selectedIds.size.toLocaleString();
+        btnDeleteSelected.style.display = state.selectedIds.size > 0 ? "inline-flex" : "none";
+        if (state.sourceFiles.length > 0) {
+          fileChipsContainer.style.display = "flex";
+          fileChips.innerHTML = state.sourceFiles.map((sf) => `
+            <div class="file-chip">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <span>${escapeHtml(sf.name)}</span>
+              <strong>(${sf.count})</strong>
+            </div>
+          `).join("");
+        } else {
+          fileChipsContainer.style.display = "none";
+          fileChips.innerHTML = "";
+        }
+      }
+
+      function updateSortArrows() {
+        document.querySelectorAll(".th-sortable").forEach((el) => {
+          const arrow = el.querySelector(".sort-arrow");
+          if (!arrow) return;
+          if (el.getAttribute("data-sort") === state.sortBy) {
+            arrow.textContent = state.sortOrder === "asc" ? "↑" : "↓";
+            arrow.style.opacity = "1";
+          } else {
+            arrow.textContent = "↕";
+            arrow.style.opacity = "0.5";
+          }
+        });
+      }
+
+      function applyFilterAndSort() {
+        const query = state.searchQuery.toLowerCase().trim();
+        const source = state.sourceFilter;
+        // Normalize the search query for phone matching
+        const queryDigits = query.replace(/\D/g, "");
+        const queryPhoneKey = queryDigits.length >= 7 ? getPhoneMatchKey(normalizePhoneNumber(queryDigits)) : "";
+
+        let list = state.contacts.filter((c) => {
+          if (source && !sourcesOf(c).includes(source)) return false;
+          if (!query) return true;
+          const nameBlob = [c.fn, c.n?.given, c.n?.family, c.n?.middle, c.nickname].filter(Boolean).join(" ").toLowerCase();
+          const orgMatch = (c.org || "").toLowerCase().includes(query);
+          const titleMatch = (c.title || "").toLowerCase().includes(query);
+
+          // Phone match: raw text OR canonical match key
+          let phoneMatch = false;
+          if (Array.isArray(c.tels)) {
+            phoneMatch = c.tels.some((t) => {
+              if (!t) return false;
+              if ((t.value || "").toLowerCase().includes(query)) return true;
+              if ((t.normalized || "").includes(query)) return true;
+              if (queryPhoneKey) {
+                const telKey = getPhoneMatchKey(t.normalized || normalizePhoneNumber(t.value));
+                if (telKey && telKey === queryPhoneKey) return true;
+              }
+              return false;
+            });
+          }
+
+          const emailMatch = Array.isArray(c.emails) && c.emails.some((e) => (e.value || "").toLowerCase().includes(query));
+          const noteMatch = Array.isArray(c.notes) && c.notes.some((n) => (n || "").toLowerCase().includes(query));
+          const sourceMatch = sourcesOf(c).some((s) => s.toLowerCase().includes(query));
+          return nameBlob.includes(query) || orgMatch || titleMatch || phoneMatch || emailMatch || noteMatch || sourceMatch;
+        });
+
+        list.sort((a, b) => {
+          let valA = "";
+          let valB = "";
+          if (state.sortBy === "fn") {
+            valA = (a.fn || "").toLowerCase();
+            valB = (b.fn || "").toLowerCase();
+          } else if (state.sortBy === "org") {
+            valA = (a.org || "").toLowerCase();
+            valB = (b.org || "").toLowerCase();
+          } else if (state.sortBy === "source") {
+            valA = sourcesOf(a).join(",").toLowerCase();
+            valB = sourcesOf(b).join(",").toLowerCase();
+          } else if (state.sortBy === "phone") {
+            valA = (a.tels?.[0]?.value || "").toLowerCase();
+            valB = (b.tels?.[0]?.value || "").toLowerCase();
+          } else if (state.sortBy === "email") {
+            valA = (a.emails?.[0]?.value || "").toLowerCase();
+            valB = (b.emails?.[0]?.value || "").toLowerCase();
+          }
+          if (valA < valB) return state.sortOrder === "asc" ? -1 : 1;
+          if (valA > valB) return state.sortOrder === "asc" ? 1 : -1;
+          return 0;
+        });
+
+        state.filteredContacts = list;
+        renderTable();
+        updateSortArrows();
+      }
+
+      function renderTable() {
+        const total = state.filteredContacts.length;
+        if (total === 0) {
+          contactsTbody.innerHTML = "";
+          tableEmptyState.style.display = "block";
+          tablePagination.style.display = "none";
+          selectAllCheckbox.checked = false;
+          selectAllCheckbox.indeterminate = false;
+          if (state.contacts.length === 0) {
+            emptyTitle.textContent = "No Contacts Loaded";
+            emptyText.textContent = "Drag and drop one or more .vcf files above, or import a public vCard URL.";
+          } else {
+            emptyTitle.textContent = "No matching contacts";
+            emptyText.textContent = "Try a different search or source filter.";
+          }
+          return;
+        }
+
+        tableEmptyState.style.display = "none";
+        tablePagination.style.display = "flex";
+        const totalPages = Math.ceil(total / state.pageSize) || 1;
+        if (state.currentPage > totalPages) state.currentPage = totalPages;
+        const startIdx = (state.currentPage - 1) * state.pageSize;
+        const endIdx = Math.min(startIdx + state.pageSize, total);
+        const pageItems = state.filteredContacts.slice(startIdx, endIdx);
+
+        pagStart.textContent = (startIdx + 1).toLocaleString();
+        pagEnd.textContent = endIdx.toLocaleString();
+        pagTotal.textContent = total.toLocaleString();
+        currentPageNum.textContent = String(state.currentPage);
+        totalPagesNum.textContent = String(totalPages);
+        btnPrevPage.disabled = state.currentPage <= 1;
+        btnNextPage.disabled = state.currentPage >= totalPages;
+
+        let pageSelectedCount = 0;
+        let rowsHtml = "";
+        for (const c of pageItems) {
+          const isSelected = state.selectedIds.has(c.id);
+          if (isSelected) pageSelectedCount++;
+
+          // Deduplicate phones by canonical key for display
+          let phonesHtml = '<span class="text-muted">—</span>';
+          if (Array.isArray(c.tels) && c.tels.length > 0) {
+            const seenKeys = new Set();
+            const displayTels = [];
+            for (const t of c.tels) {
+              if (!t || !t.value) continue;
+              const key = getPhoneMatchKey(t.normalized || normalizePhoneNumber(t.value));
+              if (key && seenKeys.has(key)) continue;
+              if (key) seenKeys.add(key);
+              displayTels.push(t);
+            }
+            phonesHtml = `<div class="cell-tag-list">${displayTels.map((t) => `
+              <span class="tag-pill" title="Type: ${escapeHtml(t.type || "CELL")} · Intl: ${escapeHtml(toInternationalPhone(t.value))}">
+                <span class="tag-label">${escapeHtml(t.type || "CELL")}</span>
+                <span>${escapeHtml(t.value)}</span>
+              </span>`).join("")}</div>`;
+          }
+
+          let emailsHtml = '<span class="text-muted">—</span>';
+          if (Array.isArray(c.emails) && c.emails.length > 0) {
+            emailsHtml = `<div class="cell-tag-list">${c.emails.map((e) => `<span class="tag-pill"><span>${escapeHtml(e.value)}</span></span>`).join("")}</div>`;
+          }
+          let orgHtml = '<span class="text-muted">—</span>';
+          if (c.org || c.title) {
+            orgHtml = `<div class="cell-name-box">${c.org ? `<strong>${escapeHtml(c.org)}</strong>` : ""}${c.title ? `<span class="cell-title">${escapeHtml(c.title)}</span>` : ""}</div>`;
+          }
+          const adr = formatAddress(c);
+          const adrHtml = adr ? `<span class="cell-title">${escapeHtml(adr)}</span>` : '<span class="text-muted">—</span>';
+          const badgeMerged = c.isMerged
+            ? `<span class="badge badge-success ml-1" title="Combined from ${c.mergedCount} duplicate entries">Merged (${c.mergedCount})</span>`
+            : "";
+          rowsHtml += `
+            <tr class="${isSelected ? "selected" : ""}" data-id="${escapeHtml(c.id)}">
+              <td class="th-checkbox"><input type="checkbox" class="row-checkbox" data-id="${escapeHtml(c.id)}" ${isSelected ? "checked" : ""} aria-label="Select ${escapeHtml(c.fn || "contact")}"></td>
+              <td>
+                <div class="cell-name-box">
+                  <span class="cell-name">${escapeHtml(c.fn || "Unnamed Contact")} ${badgeMerged}</span>
+                  ${c.nickname ? `<span class="cell-title">"${escapeHtml(c.nickname)}"</span>` : ""}
+                </div>
+              </td>
+              <td>${phonesHtml}</td>
+              <td>${emailsHtml}</td>
+              <td>${orgHtml}</td>
+              <td>${sourceBadgesHtml(c)}</td>
+              <td>${adrHtml}</td>
+              <td class="th-actions">
+                <div class="row-actions">
+                  <button class="btn btn-icon btn-xs btn-row-edit" type="button" data-id="${escapeHtml(c.id)}" title="Edit contact" aria-label="Edit ${escapeHtml(c.fn || "contact")}">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                  </button>
+                  <button class="btn btn-danger-outline btn-xs btn-row-del" type="button" data-id="${escapeHtml(c.id)}" title="Delete contact" aria-label="Delete ${escapeHtml(c.fn || "contact")}">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>`;
+        }
+        contactsTbody.innerHTML = rowsHtml;
+        if (pageSelectedCount === pageItems.length && pageItems.length > 0) {
+          selectAllCheckbox.checked = true;
+          selectAllCheckbox.indeterminate = false;
+        } else if (pageSelectedCount > 0) {
+          selectAllCheckbox.checked = false;
+          selectAllCheckbox.indeterminate = true;
+        } else {
+          selectAllCheckbox.checked = false;
+          selectAllCheckbox.indeterminate = false;
+        }
+      }
+
+      function refresh() {
+        recomputeStats();
+        updateSourceFilterOptions();
+        applyFilterAndSort();
+        updateHUD();
+      }
+
+      function pageItems() {
+        const startIdx = (state.currentPage - 1) * state.pageSize;
+        const endIdx = Math.min(startIdx + state.pageSize, state.filteredContacts.length);
+        return state.filteredContacts.slice(startIdx, endIdx);
+      }
+
+      async function ingestParsed(contacts, displayName) {
+        if (!contacts.length) return 0;
+        state.contacts.push(...contacts);
+        const existing = state.sourceFiles.find((s) => s.name === displayName);
+        if (existing) existing.count += contacts.length;
+        else state.sourceFiles.push({ name: displayName, count: contacts.length });
+        return contacts.length;
+      }
+
+      async function uploadFiles(fileList) {
+        if (!fileList || fileList.length === 0) return;
+        let added = 0;
+        let fileCount = 0;
+        for (const file of fileList) {
+          try {
+            const text = await readFileAsText(file);
+            const display = deriveSourceName(file.name);
+            const { contacts } = parseVCF(text, display);
+            if (!contacts.length) {
+              showToast(`No vCards found in ${file.name}`, "error");
+              continue;
+            }
+            added += await ingestParsed(contacts, display);
+            fileCount++;
+          } catch (err) {
+            showToast(`Could not read ${file.name}`, "error");
+          }
+        }
+        if (added > 0) {
+          state.currentPage = 1;
+          refresh();
+          await persistNow();
+          showToast(`Parsed ${added.toLocaleString()} contact${added === 1 ? "" : "s"} from ${fileCount} file${fileCount === 1 ? "" : "s"}.`, "success");
+        }
+      }
+
+      async function importFromUrl() {
+        const raw = urlInput.value.trim();
+        if (!raw) {
+          showToast("Enter a valid http(s) URL.", "error");
+          return;
+        }
+        let parsed;
+        try {
+          parsed = new URL(raw);
+        } catch {
+          showToast("Enter a valid http(s) URL.", "error");
+          return;
+        }
+        if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+          showToast("Enter a valid http(s) URL.", "error");
+          return;
+        }
+
+        // Resolve Google Drive / GitHub share links to direct download URLs
+        const directUrl = resolveImportUrl(parsed.href);
+        const isResolved = directUrl !== parsed.href;
+
+        const display = deriveSourceName(parsed.href);
+        btnImportUrl.disabled = true;
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 30000);
+        try {
+          // Google Drive may return an HTML confirmation page; try the direct download first
+          let res = await fetch(directUrl, { signal: controller.signal, redirect: "follow" });
+          if (!res.ok) throw new Error(String(res.status));
+
+          let text = await res.text();
+          const contentType = (res.headers.get("content-type") || "").toLowerCase();
+
+          // Detect HTML response (e.g., Google Drive virus scan warning page)
+          if (/text\/html/.test(contentType) && /drive\.google\.com/.test(directUrl)) {
+            // Try to extract the confirm download URL from the HTML page
+            const confirmMatch = text.match(/href="([^"]*confirm=[^"]+)"/i);
+            if (confirmMatch) {
+              const confirmUrl = confirmMatch[1].replace(/&amp;/g, "&");
+              const res2 = await fetch(confirmUrl, { signal: controller.signal, redirect: "follow" });
+              if (res2.ok) text = await res2.text();
+            }
+          }
+
+          // If the direct URL gave us an HTML page (not a VCF), try one more fallback
+          if (/text\/html/.test(contentType) && !/BEGIN:VCARD/i.test(text)) {
+            throw new Error("HTML response");
+          }
+
+          const { contacts } = parseVCF(text, display);
+          if (!contacts.length) {
+            showToast("No vCards found at that URL.", "error");
+            return;
+          }
+          await ingestParsed(contacts, display);
+          state.currentPage = 1;
+          refresh();
+          await persistNow();
+          const via = isResolved ? " (share link resolved)" : "";
+          showToast(`Imported ${contacts.length.toLocaleString()} contact${contacts.length === 1 ? "" : "s"} from ${display}${via}.`, "success");
+          urlInput.value = "";
+        } catch (err) {
+          // Final fallback: try the original URL as-is (some servers block resolved URLs)
+          if (isResolved) {
+            try {
+              const res = await fetch(parsed.href, { signal: controller.signal, redirect: "follow" });
+              if (res.ok) {
+                const text = await res.text();
+                const { contacts } = parseVCF(text, display);
+                if (contacts.length) {
+                  await ingestParsed(contacts, display);
+                  state.currentPage = 1;
+                  refresh();
+                  await persistNow();
+                  showToast(`Imported ${contacts.length.toLocaleString()} contact${contacts.length === 1 ? "" : "s"} from ${display}.`, "success");
+                  urlInput.value = "";
+                  return;
+                }
+              }
+            } catch {
+              /* fall through to the error message */
+            }
+          }
+          showToast(URL_FETCH_ERROR, "error");
+        } finally {
+          clearTimeout(timer);
+          btnImportUrl.disabled = false;
+        }
+      }
+
+      function deleteContacts(ids) {
+        if (!ids || ids.length === 0) return;
+        const idSet = new Set(ids);
+        state.contacts = state.contacts.filter((c) => !idSet.has(c.id));
+        ids.forEach((id) => state.selectedIds.delete(id));
+        refresh();
+        persistNow();
+        showToast(`Deleted ${ids.length} contact${ids.length === 1 ? "" : "s"}`, "info");
+      }
+
+      function addPhoneInputRow(val = "", type = "CELL") {
+        const div = document.createElement("div");
+        div.className = "dynamic-input-row";
+        div.innerHTML = `
+          <input type="text" class="form-input phone-val" placeholder="+1 555-0199" value="${escapeHtml(val)}" aria-label="Phone number">
+          <select class="form-select form-select-sm phone-type" aria-label="Phone type">
+            ${["CELL", "WORK", "HOME", "MAIN", "OTHER", "VOICE", "FAX"].map((opt) => `<option value="${opt}" ${type === opt ? "selected" : ""}>${opt}</option>`).join("")}
+          </select>
+          <button type="button" class="btn btn-icon btn-xs btn-remove-row" aria-label="Remove phone" style="color: var(--color-danger);">&times;</button>`;
+        div.querySelector(".btn-remove-row").addEventListener("click", () => div.remove());
+        phoneInputsList.appendChild(div);
+      }
+
+      function addEmailInputRow(val = "", type = "INTERNET") {
+        const div = document.createElement("div");
+        div.className = "dynamic-input-row";
+        div.innerHTML = `
+          <input type="email" class="form-input email-val" placeholder="user@example.com" value="${escapeHtml(val)}" aria-label="Email address">
+          <select class="form-select form-select-sm email-type" aria-label="Email type">
+            ${["INTERNET", "WORK", "HOME", "OTHER"].map((opt) => `<option value="${opt}" ${type === opt ? "selected" : ""}>${opt}</option>`).join("")}
+          </select>
+          <button type="button" class="btn btn-icon btn-xs btn-remove-row" aria-label="Remove email" style="color: var(--color-danger);">&times;</button>`;
+        div.querySelector(".btn-remove-row").addEventListener("click", () => div.remove());
+        emailInputsList.appendChild(div);
+      }
+
+      function openContactEditor(contactId) {
+        const contact = state.contacts.find((c) => c.id === contactId);
+        if (!contact) return;
+        state.editingContactId = contactId;
+        document.getElementById("editContactId").value = contact.id;
+        document.getElementById("editFn").value = contact.fn || "";
+        document.getElementById("editGivenName").value = contact.n?.given || "";
+        document.getElementById("editFamilyName").value = contact.n?.family || "";
+        document.getElementById("editOrg").value = contact.org || "";
+        document.getElementById("editTitle").value = contact.title || "";
+        document.getElementById("editAddress").value = addressEditorValue(contact);
+        document.getElementById("editAddress").dataset.original = addressEditorValue(contact);
+        document.getElementById("editNotes").value = Array.isArray(contact.notes) ? contact.notes.join("\n") : (contact.notes || "");
+        document.getElementById("modalContactTitle").textContent = contact.fn || "Contact Details";
+        document.getElementById("editSourceInfo").innerHTML = `
+          <div class="source-badge-list">${sourceBadgesHtml(contact)}</div>
+          <span class="source-hint">Read-only. Exported as X-AYTECH-SOURCE:${escapeHtml(sourcesOf(contact).join(","))}</span>`;
+        phoneInputsList.innerHTML = "";
+        if (Array.isArray(contact.tels) && contact.tels.length > 0) contact.tels.forEach((t) => addPhoneInputRow(t.value, t.type || "CELL"));
+        else addPhoneInputRow("", "CELL");
+        emailInputsList.innerHTML = "";
+        if (Array.isArray(contact.emails) && contact.emails.length > 0) contact.emails.forEach((e) => addEmailInputRow(e.value, e.type || "INTERNET"));
+        else addEmailInputRow("", "INTERNET");
+        setModalOpen(contactModal, true);
+        document.getElementById("editFn").focus();
+      }
+
+      function renderClusters(clusters) {
+        const applyBtn = document.getElementById("btnApplyDedupe");
+        if (!clusters || clusters.length === 0) {
+          clustersContainer.innerHTML = `<div style="text-align:center;padding:24px;color:var(--text-muted);"><p>No duplicate contacts found matching the selected criteria.</p></div>`;
+          applyBtn.disabled = true;
+          return;
+        }
+        applyBtn.disabled = false;
+        clustersContainer.innerHTML = clusters.map((cl, idx) => `
+          <div class="cluster-card">
+            <div class="cluster-header">
+              <span class="cluster-title">Cluster #${idx + 1}: ${escapeHtml(cl.merged.fn)}</span>
+              <span class="badge badge-warning">${cl.count} entries${cl.reasons.length ? ` · ${escapeHtml(cl.reasons.join(", "))}` : ""}</span>
+            </div>
+            <div class="cluster-members-list">
+              ${cl.members.map((m) => `
+                <div class="member-line">
+                  <strong>${escapeHtml(m.fn)}</strong>
+                  <span>${escapeHtml((m.tels || []).map((t) => t.value).join(", ") || "No Phone")}</span>
+                  <span>${escapeHtml((m.emails || []).map((e) => e.value).join(", ") || "No Email")}</span>
+                  ${sourceBadgesHtml(m)}
+                </div>`).join("")}
+            </div>
+          </div>`).join("");
+      }
+
+      function dedupeOptions() {
+        return {
+          matchPhone: document.getElementById("dedupeMatchPhone").checked,
+          matchEmail: document.getElementById("dedupeMatchEmail").checked,
+          matchName: document.getElementById("dedupeMatchName").checked
+        };
+      }
+
+      function fetchDeduplicationPreview() {
+        const result = deduplicateContacts(state.contacts, dedupeOptions());
+        state.latestClusters = result.clusters || [];
+        document.getElementById("dedupeStatOriginal").textContent = result.originalCount.toLocaleString();
+        document.getElementById("dedupeStatResult").textContent = result.dedupedCount.toLocaleString();
+        document.getElementById("dedupeStatMerged").textContent = result.duplicatesFound.toLocaleString();
+        renderClusters(state.latestClusters);
+      }
+
+      ["dragenter", "dragover"].forEach((eventName) => {
+        dropzone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropzone.classList.add("dragover");
+        });
+      });
+      ["dragleave", "drop"].forEach((eventName) => {
+        dropzone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropzone.classList.remove("dragover");
+        });
+      });
+      dropzone.addEventListener("drop", (e) => {
+        const files = e.dataTransfer?.files;
+        if (files && files.length > 0) uploadFiles(files);
+      });
+      fileInput.addEventListener("change", (e) => {
+        const files = Array.from(e.target.files || []);
+        fileInput.value = "";
+        if (files.length > 0) uploadFiles(files);
+      });
+      btnImportUrl.addEventListener("click", importFromUrl);
+      urlInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          importFromUrl();
+        }
+      });
+
+      searchInput.addEventListener("input", () => {
+        btnClearSearch.style.display = searchInput.value ? "block" : "none";
+        window.clearTimeout(searchTimer);
+        searchTimer = window.setTimeout(() => {
+          state.searchQuery = searchInput.value;
+          state.currentPage = 1;
+          applyFilterAndSort();
+        }, 220);
+      });
+      btnClearSearch.addEventListener("click", () => {
+        searchInput.value = "";
+        state.searchQuery = "";
+        state.currentPage = 1;
+        btnClearSearch.style.display = "none";
+        window.clearTimeout(searchTimer);
+        applyFilterAndSort();
+      });
+      sourceFilterSelect.addEventListener("change", (e) => {
+        state.sourceFilter = e.target.value;
+        state.currentPage = 1;
+        applyFilterAndSort();
+      });
+
+      document.querySelectorAll(".th-sortable").forEach((th) => {
+        th.addEventListener("click", () => {
+          const sortField = th.getAttribute("data-sort");
+          if (state.sortBy === sortField) state.sortOrder = state.sortOrder === "asc" ? "desc" : "asc";
+          else {
+            state.sortBy = sortField;
+            state.sortOrder = "asc";
+          }
+          applyFilterAndSort();
+        });
+      });
+
+      contactsTbody.addEventListener("click", (e) => {
+        const rowCheckbox = e.target.closest(".row-checkbox");
+        const btnEdit = e.target.closest(".btn-row-edit");
+        const btnDel = e.target.closest(".btn-row-del");
+        const tr = e.target.closest("tr");
+        if (rowCheckbox) {
+          const id = rowCheckbox.getAttribute("data-id");
+          if (rowCheckbox.checked) state.selectedIds.add(id);
+          else state.selectedIds.delete(id);
+          updateHUD();
+          renderTable();
+          return;
+        }
+        if (btnEdit) {
+          openContactEditor(btnEdit.getAttribute("data-id"));
+          return;
+        }
+        if (btnDel) {
+          deleteContacts([btnDel.getAttribute("data-id")]);
+          return;
+        }
+        if (tr && !e.target.closest("button") && !e.target.closest("input")) openContactEditor(tr.getAttribute("data-id"));
+      });
+
+      selectAllCheckbox.addEventListener("change", (e) => {
+        const items = pageItems();
+        if (e.target.checked) items.forEach((c) => state.selectedIds.add(c.id));
+        else items.forEach((c) => state.selectedIds.delete(c.id));
+        updateHUD();
+        renderTable();
+      });
+
+      btnSelectionMenu.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const open = selectionMenu.classList.toggle("show");
+        btnSelectionMenu.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+      document.addEventListener("click", () => {
+        selectionMenu.classList.remove("show");
+        btnSelectionMenu.setAttribute("aria-expanded", "false");
+      });
+      selectionMenu.addEventListener("click", (e) => {
+        const item = e.target.closest(".dropdown-item");
+        if (!item) return;
+        const action = item.getAttribute("data-action");
+        if (action === "select-all") state.contacts.forEach((c) => state.selectedIds.add(c.id));
+        else if (action === "select-page") pageItems().forEach((c) => state.selectedIds.add(c.id));
+        else if (action === "select-dupes") {
+          state.selectedIds.clear();
+          state.contacts.forEach((c) => {
+            if (c.isMerged || (state.duplicateMemberIds && state.duplicateMemberIds.has(c.id))) state.selectedIds.add(c.id);
+          });
+        } else if (action === "deselect-all") state.selectedIds.clear();
+        selectionMenu.classList.remove("show");
+        btnSelectionMenu.setAttribute("aria-expanded", "false");
+        updateHUD();
+        renderTable();
+      });
+
+      btnPrevPage.addEventListener("click", () => {
+        if (state.currentPage > 1) {
+          state.currentPage--;
+          renderTable();
+        }
+      });
+      btnNextPage.addEventListener("click", () => {
+        const totalPages = Math.ceil(state.filteredContacts.length / state.pageSize);
+        if (state.currentPage < totalPages) {
+          state.currentPage++;
+          renderTable();
+        }
+      });
+      pageSizeSelect.addEventListener("change", (e) => {
+        state.pageSize = parseInt(e.target.value, 10);
+        state.currentPage = 1;
+        renderTable();
+      });
+
+      btnDeduplicate.addEventListener("click", () => {
+        if (state.contacts.length === 0) {
+          showToast("Load contacts before deduplicating.", "error");
+          return;
+        }
+        fetchDeduplicationPreview();
+        setModalOpen(dedupeModal, true);
+      });
+      document.getElementById("btnRerunDedupe").addEventListener("click", fetchDeduplicationPreview);
+      document.getElementById("btnApplyDedupe").addEventListener("click", async () => {
+        const result = deduplicateContacts(state.contacts, dedupeOptions());
+        state.contacts = result.mergedContacts;
+        state.selectedIds.clear();
+        state.latestClusters = [];
+        refresh();
+        await persistNow();
+        setModalOpen(dedupeModal, false);
+        showToast(`Merge applied. ${result.duplicatesFound.toLocaleString()} duplicate${result.duplicatesFound === 1 ? "" : "s"} folded into master records.`, "success");
+      });
+      document.getElementById("btnCloseDedupeModal").addEventListener("click", () => setModalOpen(dedupeModal, false));
+      document.getElementById("btnCancelDedupe").addEventListener("click", () => setModalOpen(dedupeModal, false));
+
+      document.getElementById("btnAddPhoneField").addEventListener("click", () => addPhoneInputRow("", "CELL"));
+      document.getElementById("btnAddEmailField").addEventListener("click", () => addEmailInputRow("", "INTERNET"));
+      document.getElementById("btnSaveContact").addEventListener("click", async () => {
+        const id = document.getElementById("editContactId").value;
+        const fn = document.getElementById("editFn").value.trim();
+        if (!fn) {
+          showToast("Full Name cannot be empty", "error");
+          return;
+        }
+        const idx = state.contacts.findIndex((c) => c.id === id);
+        if (idx === -1) return;
+        const existing = state.contacts[idx];
+        const tels = [];
+        phoneInputsList.querySelectorAll(".dynamic-input-row").forEach((row) => {
+          const val = row.querySelector(".phone-val").value.trim();
+          const type = row.querySelector(".phone-type").value;
+          if (val) tels.push({ value: val, type, normalized: normalizePhoneNumber(val) });
+        });
+        const emails = [];
+        emailInputsList.querySelectorAll(".dynamic-input-row").forEach((row) => {
+          const val = row.querySelector(".email-val").value.trim();
+          const type = row.querySelector(".email-type").value;
+          if (val) emails.push({ value: val, type });
+        });
+        const addressInput = document.getElementById("editAddress");
+        let adrs = Array.isArray(existing.adrs) ? existing.adrs.map((a) => ({ ...a })) : [];
+        if (addressInput.value.trim() !== (addressInput.dataset.original || "")) {
+          const bits = addressInput.value.split(",").map((s) => s.trim());
+          const base = adrs[0] || { poBox: "", extAddress: "", street: "", city: "", state: "", postalCode: "", country: "", type: "HOME" };
+          adrs[0] = {
+            ...base,
+            street: bits[0] || "",
+            city: bits[1] ?? "",
+            state: bits[2] ?? "",
+            postalCode: bits[3] ?? ""
+          };
+          if (!Object.values(adrs[0]).some(Boolean)) adrs = [];
+        }
+        const noteText = document.getElementById("editNotes").value.trim();
+        state.contacts[idx] = {
+          ...existing,
+          fn,
+          n: {
+            ...(existing.n || {}),
+            given: document.getElementById("editGivenName").value.trim(),
+            family: document.getElementById("editFamilyName").value.trim()
+          },
+          org: document.getElementById("editOrg").value.trim(),
+          title: document.getElementById("editTitle").value.trim(),
+          tels,
+          emails,
+          adrs,
+          notes: noteText ? [noteText] : []
+        };
+        refresh();
+        await persistNow();
+        setModalOpen(contactModal, false);
+        showToast("Contact updated successfully", "success");
+      });
+      document.getElementById("btnDeleteCurrentContact").addEventListener("click", () => {
+        if (!state.editingContactId) return;
+        deleteContacts([state.editingContactId]);
+        setModalOpen(contactModal, false);
+      });
+      document.getElementById("btnCloseContactModal").addEventListener("click", () => setModalOpen(contactModal, false));
+      document.getElementById("btnCancelEdit").addEventListener("click", () => setModalOpen(contactModal, false));
+      document.getElementById("contactEditForm").addEventListener("submit", (e) => e.preventDefault());
+
+      btnDeleteSelected.addEventListener("click", () => {
+        if (state.selectedIds.size === 0) return;
+        const count = state.selectedIds.size;
+        if (confirm(`Delete ${count} selected contact${count === 1 ? "" : "s"}?`)) deleteContacts(Array.from(state.selectedIds));
+      });
+
+      btnExport.addEventListener("click", () => {
+        if (state.contacts.length === 0) {
+          showToast("No contacts available to export", "error");
+          return;
+        }
+        document.getElementById("exportAllCount").textContent = `${state.contacts.length.toLocaleString()} contacts`;
+        document.getElementById("exportSelectedCount").textContent = `${state.selectedIds.size.toLocaleString()} selected`;
+        const selectedWrap = document.getElementById("exportSelectedRadioWrap");
+        if (state.selectedIds.size > 0) selectedWrap.style.display = "flex";
+        else {
+          selectedWrap.style.display = "none";
+          document.querySelector('input[name="exportScope"][value="all"]').checked = true;
+        }
+        setModalOpen(exportModal, true);
+      });
+      document.getElementById("btnConfirmExport").addEventListener("click", () => {
+        const scope = document.querySelector('input[name="exportScope"]:checked')?.value || "all";
+        const filename = ensureVcfName(document.getElementById("exportFilename").value);
+        let contacts = state.contacts;
+        if (scope === "selected") contacts = state.contacts.filter((c) => state.selectedIds.has(c.id));
+        if (!contacts.length) {
+          showToast("No contacts selected for export", "error");
+          return;
+        }
+        const vcf = serializeVCards(contacts);
+        const blob = new Blob([vcf], { type: "text/vcard;charset=utf-8" });
+        const downloadUrl = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = downloadUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(downloadUrl);
+        setModalOpen(exportModal, false);
+        showToast(`Downloaded ${filename}`, "success");
+      });
+      document.getElementById("btnCloseExportModal").addEventListener("click", () => setModalOpen(exportModal, false));
+      document.getElementById("btnCancelExport").addEventListener("click", () => setModalOpen(exportModal, false));
+
+      [dedupeModal, contactModal, exportModal].forEach((modal) => {
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) setModalOpen(modal, false);
+        });
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key !== "Escape") return;
+        if (exportModal.style.display === "flex") setModalOpen(exportModal, false);
+        else if (contactModal.style.display === "flex") setModalOpen(contactModal, false);
+        else if (dedupeModal.style.display === "flex") setModalOpen(dedupeModal, false);
+        selectionMenu.classList.remove("show");
+      });
+
+      btnResetAll.addEventListener("click", async () => {
+        if (!confirm("Reset session and remove all loaded contacts?")) return;
+        state.contacts = [];
+        state.filteredContacts = [];
+        state.selectedIds.clear();
+        state.sourceFiles = [];
+        state.searchQuery = "";
+        state.sourceFilter = "";
+        state.currentPage = 1;
+        state.latestClusters = [];
+        searchInput.value = "";
+        btnClearSearch.style.display = "none";
+        urlInput.value = "";
+        await clearStoredState();
+        refresh();
+        showToast("Session reset", "info");
+      });
+
+      btnThemeToggle.addEventListener("click", () => {
+        const next = document.body.classList.contains("theme-dark") ? "light" : "dark";
+        document.body.classList.remove("theme-dark", "theme-light");
+        document.body.classList.add(next === "light" ? "theme-light" : "theme-dark");
+        try {
+          localStorage.setItem("aytech_theme", next);
+        } catch {
+          /* theme simply won't persist */
+        }
+      });
+
+      try {
+        const saved = localStorage.getItem("aytech_theme");
+        if (saved === "light" || saved === "dark") {
+          document.body.classList.remove("theme-dark", "theme-light");
+          document.body.classList.add(saved === "light" ? "theme-light" : "theme-dark");
+        }
+      } catch {
+        /* default dark theme already on body */
+      }
+
+      (async () => {
+        await initStorage();
+        await hydrate();
+        refresh();
+      })();
+    }
+
+    if (typeof document !== "undefined" && document.getElementById("app")) boot();
+
+    export {
+      decodeQuotedPrintable,
+      unescapeVCardValue,
+      escapeVCardValue,
+      normalizePhoneNumber,
+      toInternationalPhone,
+      formatPhoneDisplay,
+      getPhoneMatchKey,
+      isIranianMobile,
+      isIranianLandline,
+      foldVCardLine,
+      unfoldVCardLines,
+      parseVCF,
+      serializeVCard,
+      serializeVCards,
+      deduplicateContacts,
+      deriveSourceName,
+      resolveGoogleDriveUrl,
+      resolveGitHubRawUrl,
+      resolveImportUrl,
+      normalizeEmail,
+      normalizeName,
+      sourcesOf
+    };
+  </script>
+</body>
+</html>
